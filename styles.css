@@ -22,14 +22,14 @@ body {
     width: 90%;
     margin: auto 15px;
     max-width: 400px;
-    margin-top: 25vh;
+    margin-top: 25vh; 
 
 }
 
 h1 {
     color: #000000;
     margin-bottom: 5%;
-    font-size: 2em; /* Adjust this value as needed */
+    font-size: 2em; 
     font-family: 'Arial', sans-serif;
     font-weight: bold;
 }
@@ -42,19 +42,26 @@ form {
 }
 
 input[type="text"] {
-    padding: 12px; /* Increase padding for better spacing */
+    padding: 12px; 
     border: none;
     font-size: 1em;
     border-radius: 5px;
     width: 100%;
     box-sizing: border-box;
-    margin-bottom: 20px; /* Add margin to the bottom of the input */
-    height: 45px; /* Increase height */
-    background-color: #f5f5f5; /* Retain background color */
+    margin-bottom: 20px; 
+    height: 45px; 
+    background-color: #f5f5f5; 
+}
+
+.affiliate-disclosure {
+    font-size: 0.8em;
+    color: #999;
+    margin-top: 5px; 
+
 }
 
 button {
-    padding: 12px; /* Increase padding for better spacing */
+    padding: 12px;
     border: none;
     background-color: #FE2C55;
     color: #ffffff;
@@ -62,13 +69,13 @@ button {
     cursor: pointer;
     font-size: 1em;
     width: 100%;
-    height: 45px; /* Increase height */
-    margin-bottom: 20px; /* Add margin to the bottom of the button */
+    height: 45px; 
+    margin-bottom: 20px;
 }
 
 
 button:hover {
-    background-color: #d02448; /* Darker shade of TikTok's vibrant red color */
+    background-color: #d02448;
 }
 
 /* Media query for smaller devices */

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     <title>Discount Portal</title>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -11,7 +11,9 @@
         <h1>🛍️ Unlock Discount 💸</h1>
         <form id="enterCodeForm" action="https://www.ishortn.ink/" method="get">
             <input type="text" id="secretCode" name="" placeholder="Enter Code" required>
+            <input type="hidden" name="affiliate" value="true">
             <button type="submit">Submit</button>
+            <p class="affiliate-disclosure">By submitting, you agree that this site may receive compensation for purchases made through the provided link.</p>
         </form>
     </div>
 

@@ -81,8 +81,7 @@ button:hover {
 /* Media query for smaller devices */
 @media (max-width: 600px) {
     .container {
-        padding: 10%;
-	margin-top: 12.5vh;
+        padding: 7.5% 10%;
     }
 
     h1 {

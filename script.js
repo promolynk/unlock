@@ -12,7 +12,7 @@ document.getElementById('enterCodeForm').addEventListener('submit', function(eve
             // Check if the entered code is in the list of valid codes
             if (validCodes.includes(secretCode)) {
                 // If the code is valid, redirect to the URL
-                window.location.href = 'https://taut.biz.id/' + secretCode;
+                window.location.href = 'https://www.ishortn.ink/' + secretCode;
             } else {
                 // If the code is not valid, display an error message and clear the input field
                 alert('Invalid code. Please try again.');

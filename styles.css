@@ -69,16 +69,14 @@ input[type="text"], button {
     max-width: 100%;
 }
 
-
 button {
     background-color: #EE1D52;
     color: #ffffff;
 }
 
-    .form-step h1 {
-        text-align: center;
-        
-    }
+.form-step h1 {
+    text-align: center;
+}
 
 /* Media query for smaller devices */
 @media (max-width: 600px) {
@@ -88,13 +86,9 @@ button {
 
     .form-step h1 {
         font-size: 1.4em;
-
     }
 
     input[type="text"], button {
         padding: 5%;
     }
 }
-
-
-

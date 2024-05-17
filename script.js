@@ -10,29 +10,35 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Event listener for the next button
-    nextButton.addEventListener('click', function() {
-        const currentInput = formSteps[currentStep].querySelector('input');
-        const fieldName = currentInput.id === 'NAME' ? 'name' : 
-                          currentInput.id === 'EMAIL' ? 'email address' : 
-                          currentInput.id === 'CODE' ? 'secret code' : '';
-        if (!validateInput(currentInput, fieldName)) {
-            return;
-        }
+// Event listener for the next button
+nextButton.addEventListener('click', function() {
+    const currentInput = formSteps[currentStep].querySelector('input');
+    const fieldName = currentInput.id === 'NAME' ? 'name' : 
+                      currentInput.id === 'EMAIL' ? 'email address' : 
+                      currentInput.id === 'CODE' ? 'secret code' : '';
+    if (!validateInput(currentInput, fieldName)) {
+        return;
+    }
 
-        // Hide the current step
-        formSteps[currentStep].style.display = 'none';
+    // Hide the current step
+    formSteps[currentStep].style.display = 'none';
 
-        // Show the next step if available
-        if (currentStep < formSteps.length - 1) {
-            currentStep++;
-            formSteps[currentStep].style.display = 'block';
-        } else {
-            // If on the last step, perform form submission
-            validateForm();
-            formSteps[currentStep].style.display = 'block';
+    // Show the next step if available
+    if (currentStep < formSteps.length - 1) {
+        currentStep++;
+        formSteps[currentStep].style.display = 'block';
+
+        // Change button text to "Submit" if the next step is the last one
+        if (currentStep === formSteps.length - 1) {
+            nextButton.textContent = "Submit";
         }
-    });
+    } else {
+        // If on the last step, perform form submission
+        validateForm();
+        formSteps[currentStep].style.display = 'block';
+    }
+});
+
 
     // Event listener to focus on input field when invalid code alert is closed
     window.addEventListener('keydown', function(event) {

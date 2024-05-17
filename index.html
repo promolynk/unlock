@@ -2,26 +2,72 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Unlock Savings, Shop Smarter!</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
     <link rel="manifest" href="site.webmanifest">
 </head>
 <body>
-    <div class="container">
-        <h1>🛍️ Unlock Discount 💸</h1>
-        <form id="enterCodeForm" action="https://www.ishortn.ink/" method="get">
-            <input type="text" id="secretCode" name="" placeholder="Enter Code" required>
-            <input type="hidden" name="affiliate" value="true">
-            <button type="submit">Submit</button>
-            <p class="affiliate-disclosure">By submitting, you agree that this site may receive compensation through the provided link.</p>
-        </form>
+<div class="form-container">
+    <div class="sib-form-container">
+        <div id="sib-form-container" class="sib-form-container">
+            <form id="sib-form" method="POST" action="https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U" data-type="subscription">
+                <div class="form-step active">
+                    <h1>✍️ Enter Your Name  &nbsp; </h1>
+                    <div class="input-container">
+                        <input type="text" id="NAME" name="NAME" autocomplete="off" placeholder="Enter Name" />
+                                      <button id="next-button" class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit"> Next
+                    <span class="sib-hide-loader-icon">
+                        Next
+                    </span>
+                </button>
+                        <div class="disclosure name-disclosure">
+                            <p class="affiliate-disclosure">We respect your privacy.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-step">
+                    <h1>✉️ Enter Your Email  &nbsp; </h1>
+                    <div class="input-container">
+                        <input type="text" id="EMAIL" name="EMAIL" autocomplete="off" placeholder="Enter Email" data-required="true" required />
+                                      <button id="next-button" class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit"> Next
+                    <span class="sib-hide-loader-icon">
+                        Next
+                    </span>
+                </button>
+                        <div class="disclosure email-disclosure">
+                            <p class="affiliate-disclosure">By providing your email, you consent to receive marketing materials.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-step">
+                    <h1>🛍️ Unlock Discount 💸</h1>
+                    <div class="input-container">
+                        <input type="text" id="CODE" name="CODE" autocomplete="off" placeholder="Enter Code" data-required="true" required />
+                                      <button id="next-button" class="sib-form-block__button sib-form-block__button-with-loader" form="sib-form" type="submit"> Submit
+                    <span class="sib-hide-loader-icon">
+                        Next
+                    </span>
+                </button>
+                        <div class="disclosure code-disclosure">
+                            <p class="affiliate-disclosure">By submitting, you agree that this site may receive compensation through the provided link.</p>
+                        </div>
+                    </div>
+                </div>
+  
+            </form>
+        </div>
     </div>
+</div>
 
-    <iframe id="myFrame" style="display:none;"></iframe>
-    <script src="script.js"></script>
+<input type="text" name="email_address_check" value="" class="input--hidden">
+<input type="hidden" name="locale" value="en">
+
+<script src="script.js" defer></script>
 </body>
 </html>

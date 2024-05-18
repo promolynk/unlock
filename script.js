@@ -5,18 +5,28 @@ document.addEventListener("DOMContentLoaded", function() {
     const nextCodeButton = document.getElementById('next-code');
     let currentStep = 0;
 
-    // Hide all form steps except the first one
-    formSteps.forEach((step, index) => {
-        if (index !== currentStep) {
-            step.style.display = 'none';
-        }
-    });
-
     // Function to show the appropriate next button based on the current step
     function showNextButton() {
         nextNameButton.style.display = currentStep === 0 ? 'block' : 'none';
         nextEmailButton.style.display = currentStep === 1 ? 'block' : 'none';
         nextCodeButton.style.display = currentStep === 2 ? 'block' : 'none';
+    }
+
+    // Check local storage for existing user data
+    function checkLocalStorage() {
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        if (userData && currentStep === 0) {
+            // If user data exists and current step is 0, skip to step 2 (code)
+            currentStep = 2;
+        }
+
+        // Show the current step
+        formSteps.forEach((step, index) => {
+            step.style.display = index === currentStep ? 'block' : 'none';
+        });
+
+        // Show the appropriate button
+        showNextButton();
     }
 
     // Initial focus on the first input field
@@ -130,29 +140,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
             // Check if the entered code is in the list of valid codes
             if (validCodes.includes(code)) {
-                // If the code is valid, submit the form data to Brevo
-                let formData = new FormData();
-                formData.append('NAME', capitalizeFirstLetter(name));
-                formData.append('EMAIL', email);
-
-                fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // If the submission is successful, redirect the user to the secret URL
-                        window.location.href = 'https://www.ishortn.ink/' + code;
-                    } else {
-                        // If there's an error with the submission, redirect the user to the secret URL
-                        window.location.href = 'https://www.ishortn.ink/' + code;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    // If there's an error with the fetch request, redirect the user to the secret URL
-                    window.location.href = 'https://www.ishortn.ink/' + code;
-                });
+                // If the code is valid, store user data and redirect to the secret URL
+                const userData = { name, email };
+                localStorage.setItem('userData', JSON.stringify(userData));
+                window.location.href = 'https://www.ishortn.ink/' + code;
             } else {
                 handleInvalidCodePopup(); // Handle invalid code popup
             }
@@ -171,9 +162,7 @@ document.addEventListener("DOMContentLoaded", function() {
             codeInput.focus(); // Focus on the code input field after dismissing the popup
         }
     }
-
-    // Helper function to capitalize the first letter of a string
-    function capitalizeFirstLetter(string) {
-        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-    }
+    
+    // Call the function to check local storage on page load
+    checkLocalStorage();
 });

@@ -20,9 +20,8 @@ body {
     border-radius: 10px;
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
     width: 90%;
-    margin: auto 15px;
     max-width: 400px;
-    margin-top: 25vh;
+    margin: 25vh auto;
 }
 
 .sib-form-container {
@@ -47,6 +46,7 @@ input[type="text"], button {
     box-sizing: border-box;
     height: 45px;
     background-color: #f5f5f5;
+    margin-top: 10px;
 }
 
 .affiliate-disclosure {
@@ -70,11 +70,14 @@ input[type="text"], button {
 .sib-form-block__button {
     background-color: #EE1D52;
     color: #ffffff;
+    margin-top: 20px;
     margin-bottom: 30px;
+    cursor: pointer;
 }
 
 .form-step h1 {
     text-align: center;
+    font-size: 1.5em;
 }
 
 /* Media query for smaller devices */
@@ -90,9 +93,8 @@ input[type="text"], button {
     input[type="text"], button {
         padding: 5%;
     }
-#sib-form {
-    padding: 15px 30px;
 
+    #sib-form {
+        padding: 15px 30px;
+    }
 }
-
-

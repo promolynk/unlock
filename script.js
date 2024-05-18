@@ -1,6 +1,8 @@
 document.addEventListener("DOMContentLoaded", function() {
     const formSteps = document.querySelectorAll('.form-step');
-    const nextButton = document.getElementById('next-button');
+    const nextNameButton = document.getElementById('next-name');
+    const nextEmailButton = document.getElementById('next-email');
+    const nextCodeButton = document.getElementById('next-code');
     let currentStep = 0;
 
     // Hide all form steps except the first one
@@ -10,42 +12,80 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-// Event listener for the next button
-nextButton.addEventListener('click', function() {
-    const currentInput = formSteps[currentStep].querySelector('input');
-    const fieldName = currentInput.id === 'NAME' ? 'name' : 
-                      currentInput.id === 'EMAIL' ? 'email address' : 
-                      currentInput.id === 'CODE' ? 'secret code' : '';
-    if (!validateInput(currentInput, fieldName)) {
-        return;
+    // Function to show the appropriate next button based on the current step
+    function showNextButton() {
+        nextNameButton.style.display = currentStep === 0 ? 'block' : 'none';
+        nextEmailButton.style.display = currentStep === 1 ? 'block' : 'none';
+        nextCodeButton.style.display = currentStep === 2 ? 'block' : 'none';
     }
 
-    // Hide the current step
-    formSteps[currentStep].style.display = 'none';
+    // Initial focus on the first input field
+    formSteps[currentStep].querySelector('input').focus();
+    showNextButton();
 
-    // Show the next step if available
-    if (currentStep < formSteps.length - 1) {
+    // Function to handle form step transitions
+    function goToNextStep() {
+        // Hide the current step
+        formSteps[currentStep].style.display = 'none';
+
+        // Show the next step if available
         currentStep++;
-        formSteps[currentStep].style.display = 'block';
+        if (currentStep < formSteps.length) {
+            formSteps[currentStep].style.display = 'block';
 
-        // Change button text to "Submit" if the next step is the last one
-        if (currentStep === formSteps.length - 1) {
-            nextButton.textContent = "Submit";
+            // Focus on the next input field
+            const nextInput = formSteps[currentStep].querySelector('input');
+            if (nextInput) {
+                nextInput.focus();
+            }
         }
-    } else {
-        // If on the last step, perform form submission
-        validateForm();
-        formSteps[currentStep].style.display = 'block';
+
+        // Show the appropriate button
+        showNextButton();
     }
-});
 
+    // Event listener for the next buttons
+    nextNameButton.addEventListener('click', function() {
+        const currentInput = formSteps[currentStep].querySelector('input');
+        const fieldName = currentInput.id === 'NAME' ? 'name' : '';
+        if (!validateInput(currentInput, fieldName)) {
+            return;
+        }
 
-    // Event listener to focus on input field when invalid code alert is closed
-    window.addEventListener('keydown', function(event) {
+        goToNextStep();
+    });
+
+    nextEmailButton.addEventListener('click', function() {
+        const currentInput = formSteps[currentStep].querySelector('input');
+        const fieldName = currentInput.id === 'EMAIL' ? 'email address' : '';
+        if (!validateInput(currentInput, fieldName)) {
+            return;
+        }
+
+        goToNextStep();
+    });
+
+    nextCodeButton.addEventListener('click', function() {
+        const currentInput = formSteps[currentStep].querySelector('input');
+        const fieldName = currentInput.id === 'CODE' ? 'secret code' : '';
+        if (!validateInput(currentInput, fieldName)) {
+            return;
+        }
+
+        validateForm();
+    });
+
+    // Event listener for Enter key press
+    document.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
-            const codeInput = document.getElementById('CODE');
-            if (codeInput) {
-                codeInput.focus();
+            event.preventDefault(); // Prevent the default form submission
+
+            if (currentStep === 0) {
+                nextNameButton.click();
+            } else if (currentStep === 1) {
+                nextEmailButton.click();
+            } else if (currentStep === 2) {
+                nextCodeButton.click();
             }
         }
     });
@@ -59,6 +99,7 @@ nextButton.addEventListener('click', function() {
         } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
             alert('Please enter a valid email address.');
             input.value = ''; // Clear the email input field
+            input.focus();
             return false;
         }
         return true;
@@ -71,7 +112,7 @@ nextButton.addEventListener('click', function() {
     }
 
     // Function to validate the form before submission
-    function validateForm() {
+    async function validateForm() {
         const name = document.getElementById('NAME').value.trim();
         const email = document.getElementById('EMAIL').value.trim();
         const code = document.getElementById('CODE').value.trim();
@@ -81,35 +122,44 @@ nextButton.addEventListener('click', function() {
             return;
         }
 
-        fetch('https://gist.githubusercontent.com/im-umar/ba96e47bfa2f3dd0bdc22969f72bea87/raw/')
-            .then(response => response.text())
-            .then(data => {
-                const validCodes = data.split('\n');
-                if (!validCodes.includes(code)) {
-                    handleInvalidCodePopup(); // Handle invalid code popup
-                } else {
-                    // If all validations pass, submit the form data to Brevo
-                    let formData = new FormData();
-                    formData.append('NAME', capitalizeFirstLetter(name));
-                    formData.append('EMAIL', email);
+        try {
+            // Fetch the list of valid codes from the Gist
+            const response = await fetch('https://gist.githubusercontent.com/im-umar/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
+            const data = await response.text();
+            const validCodes = data.split('\n');
 
-                    fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
-                        method: 'POST',
-                        body: formData
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            // If the submission is successful, redirect the user to the secret URL
-                            window.location.href = 'https://www.ishortn.ink/' + code;
-                        } 
-                    })
+            // Check if the entered code is in the list of valid codes
+            if (validCodes.includes(code)) {
+                // If the code is valid, submit the form data to Brevo
+                let formData = new FormData();
+                formData.append('NAME', capitalizeFirstLetter(name));
+                formData.append('EMAIL', email);
 
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching valid codes:', error);
-                alert('Error validating the code. Please try again later.');
-            });
+                fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // If the submission is successful, redirect the user to the secret URL
+                        window.location.href = 'https://www.ishortn.ink/' + code;
+                    } else {
+                        // If there's an error with the submission, redirect the user to the secret URL
+                        window.location.href = 'https://www.ishortn.ink/' + code;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // If there's an error with the fetch request, redirect the user to the secret URL
+                    window.location.href = 'https://www.ishortn.ink/' + code;
+                });
+            } else {
+                handleInvalidCodePopup(); // Handle invalid code popup
+            }
+        } catch (error) {
+            console.error('Error fetching valid codes:', error);
+            alert('Error validating the code. Please try again later.');
+        }
     }
 
     // Function to handle invalid code popup
@@ -127,72 +177,3 @@ nextButton.addEventListener('click', function() {
         return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
     }
 });
-
-document.getElementById('sib-form').addEventListener('submit', async function(event) {
-    event.preventDefault(); // Prevent the form from submitting normally
-
-    let name = document.getElementById('NAME').value.trim();
-    let email = document.getElementById('EMAIL').value.trim();
-    let secretCode = document.getElementById('CODE').value.trim();
-
-    // Check if name, email, or code is blank and display appropriate error message
-    if (!name) {
-        alert('Please enter your name.');
-        return; // Stop further execution
-    } else if (!email) {
-        alert('Please enter your email address.');
-        return; // Stop further execution
-    } else if (!secretCode) {
-        alert('Please enter the secret code.');
-        return; // Stop further execution
-    }
-
-    // Capitalize the first letter of the name
-    name = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-
-    // Validate the email format using regex
-    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    if (!emailPattern.test(email)) {
-        alert('Please enter a valid email address.');
-        return; // Stop further execution
-    }
-
-    try {
-        // Fetch the list of valid codes from the Gist
-        const response = await fetch('https://gist.githubusercontent.com/im-umar/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
-        const data = await response.text();
-        const validCodes = data.split('\n');
-
-        // Check if the entered code is in the list of valid codes
-        if (validCodes.includes(secretCode)) {
-            // If the code is valid, submit the form data to Brevo
-            let formData = new FormData();
-            formData.append('NAME', name);
-            formData.append('EMAIL', email);
-
-            // Submit the form data to Brevo
-            fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    // If the submission is successful, redirect the user to the secret URL
-                    window.location.href = 'https://www.ishortn.ink/' + secretCode;
-                } else {
-                    // If there's an error with the submission, redirect the user to the secret URL
-                    window.location.href = 'https://www.ishortn.ink/' + secretCode;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // If there's an error with the fetch request, redirect the user to the secret URL
-                window.location.href = 'https://www.ishortn.ink/' + secretCode;
-            });
-        }
-    } catch (error) {
-        console.error('Error fetching valid codes:', error);
-        // Log any errors that occur during the fetch request
-    }
-});
-

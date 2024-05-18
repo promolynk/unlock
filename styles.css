@@ -68,9 +68,10 @@ input[type="text"], button {
     max-width: 100%;
 }
 
-button {
+.sib-form-block__button {
     background-color: #EE1D52;
     color: #ffffff;
+    margin-bottom: 30px;
 }
 
 .form-step h1 {

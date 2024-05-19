@@ -112,11 +112,11 @@ document.addEventListener("DOMContentLoaded", function() {
     function validateInput(input, fieldName) {
         const trimmedValue = input.value.trim();
         if (!trimmedValue) {
-            input.placeholder = `Please enter your ${fieldName}.`;
+            input.placeholder = `Please enter your ${fieldName}`;
             input.classList.add('error');
             return false;
         } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
-            input.placeholder = 'Please enter a valid email address.';
+            input.placeholder = 'Please enter a valid email address';
             input.value = ''; // Clear the email input field
             input.classList.add('error');
             input.focus();
@@ -141,7 +141,7 @@ async function validateForm() {
     console.log("Entered code:", code); // Log the entered code
 
     if (!validateEmail(email)) {
-        alert('Please enter a valid email address.');
+        alert('Please enter a valid email address');
         return;
     }
 
@@ -189,7 +189,7 @@ async function validateForm() {
         }
     } catch (error) {
         console.error('Error fetching valid codes:', error);
-        alert('Error validating the code. Please try again later.');
+        alert('Error validating the code. Please try again later');
     }
 }
 
@@ -197,7 +197,7 @@ async function validateForm() {
 // Function to handle invalid code input
 function handleInvalidCodeInput() {
     const codeInput = document.getElementById('CODE');
-    codeInput.placeholder = 'Invalid code. Please try again.';
+    codeInput.placeholder = 'Invalid code. Please try again';
     codeInput.value = ''; // Clear the input field
     codeInput.classList.add('error');
     codeInput.focus(); // Focus on the code input field

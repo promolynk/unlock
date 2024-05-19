@@ -30,7 +30,7 @@ body {
 }
 
 #sib-form {
-    padding: 0px 15px;
+    padding: 0 30px;
 }
 
 input[type="text"]::placeholder {
@@ -94,7 +94,5 @@ input[type="text"], button {
         padding: 5%;
     }
 
-    #sib-form {
-        padding: 15px 30px;
-    }
+
 }

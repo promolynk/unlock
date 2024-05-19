@@ -103,7 +103,7 @@ input[type="text"]::placeholder {
 
 input[type="text"] {
     padding: 12px;
-    border: 1px solid #555555;
+    border: 1px solid #666666;
     font-size: 1em;
     border-radius: 5px;
     width: 100%;
@@ -115,11 +115,10 @@ input[type="text"] {
 
 input[type="text"]:focus {
     outline: none;
-    border-color: #555555; /* Set focus border color to match initial border color */
+    border-color: #666666;
 }
 
 input[type="text"].error::placeholder {
     color: #EF9A9A;
     opacity: 1; /* Ensures placeholder is visible */
 }
-

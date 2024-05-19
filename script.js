@@ -189,7 +189,7 @@ async function validateForm() {
         }
     } catch (error) {
         console.error('Error fetching valid codes:', error);
-        alert('Error validating the code. Please try again later');
+        alert('Error validating the code, Please try again later');
     }
 }
 
@@ -197,7 +197,7 @@ async function validateForm() {
 // Function to handle invalid code input
 function handleInvalidCodeInput() {
     const codeInput = document.getElementById('CODE');
-    codeInput.placeholder = 'Invalid code. Please try again';
+    codeInput.placeholder = 'Invalid code, Please try again';
     codeInput.value = ''; // Clear the input field
     codeInput.classList.add('error');
     codeInput.focus(); // Focus on the code input field

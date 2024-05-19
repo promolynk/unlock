@@ -15,8 +15,14 @@ document.addEventListener("DOMContentLoaded", function() {
     // Check local storage for existing user data
     function checkLocalStorage() {
         const userData = JSON.parse(localStorage.getItem('userData'));
-        if (userData && currentStep === 0) {
-            // If user data exists and current step is 0, skip to step 2 (code)
+        if (userData) {
+            if (userData.name) {
+                document.getElementById('NAME').value = userData.name;
+            }
+            if (userData.email) {
+                document.getElementById('EMAIL').value = userData.email;
+            }
+            // Skip to the code step if user data is present
             currentStep = 2;
         }
 
@@ -27,11 +33,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Show the appropriate button
         showNextButton();
-    }
 
-    // Initial focus on the first input field
-    formSteps[currentStep].querySelector('input').focus();
-    showNextButton();
+        // Set focus on the current step's input
+        const currentInput = formSteps[currentStep].querySelector('input');
+        if (currentInput) {
+            currentInput.focus();
+        }
+    }
 
     // Function to handle form step transitions
     function goToNextStep() {
@@ -121,62 +129,62 @@ document.addEventListener("DOMContentLoaded", function() {
         return emailPattern.test(email);
     }
 
-// Function to validate the form before submission
-async function validateForm() {
-    const name = document.getElementById('NAME').value.trim();
-    const email = document.getElementById('EMAIL').value.trim();
-    const code = document.getElementById('CODE').value.trim();
+    // Function to validate the form before submission
+    async function validateForm() {
+        const name = document.getElementById('NAME').value.trim();
+        const email = document.getElementById('EMAIL').value.trim();
+        const code = document.getElementById('CODE').value.trim();
 
-    if (!validateEmail(email)) {
-        alert('Please enter a valid email address.');
-        return;
-    }
-
-    try {
-        // Fetch the list of valid codes from the Gist
-        const response = await fetch('https://gist.githubusercontent.com/im-umar/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
-        const data = await response.text();
-        const validCodes = data.split('\n');
-
-        // Check if the entered code is in the list of valid codes
-        if (validCodes.includes(code)) {
-            // If the code is valid, submit the form data to Brevo
-            const formData = new FormData();
-            formData.append('NAME', name);
-            formData.append('EMAIL', email);
-            formData.append('CODE', code);
-
-            // Submit the form data to Brevo
-            fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    // If the submission is successful, redirect the user to the secret URL
-                    window.location.href = 'https://www.ishortn.ink/' + code;
-                } else {
-                    // If there's an error with the submission, redirect the user to the secret URL
-                    window.location.href = 'https://www.ishortn.ink/' + code;
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                // If there's an error with the fetch request, redirect the user to the secret URL
-                window.location.href = 'https://www.ishortn.ink/' + code;
-            });
-
-            // Store user data only after successful submission
-            const userData = { name, email };
-            localStorage.setItem('userData', JSON.stringify(userData));
-        } else {
-            handleInvalidCodePopup(); // Handle invalid code popup
+        if (!validateEmail(email)) {
+            alert('Please enter a valid email address.');
+            return;
         }
-    } catch (error) {
-        console.error('Error fetching valid codes:', error);
-        alert('Error validating the code. Please try again later.');
+
+        try {
+            // Fetch the list of valid codes from the Gist
+            const response = await fetch('https://gist.githubusercontent.com/im-umar/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
+            const data = await response.text();
+            const validCodes = data.split('\n');
+
+            // Check if the entered code is in the list of valid codes
+            if (validCodes.includes(code)) {
+                // If the code is valid, submit the form data to Brevo
+                const formData = new FormData();
+                formData.append('NAME', name);
+                formData.append('EMAIL', email);
+                formData.append('CODE', code);
+
+                // Submit the form data to Brevo
+                fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // If the submission is successful, redirect the user to the secret URL
+                        window.location.href = 'https://www.ishortn.ink/' + code;
+                    } else {
+                        // If there's an error with the submission, redirect the user to the secret URL
+                        window.location.href = 'https://www.ishortn.ink/' + code;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    // If there's an error with the fetch request, redirect the user to the secret URL
+                    window.location.href = 'https://www.ishortn.ink/' + code;
+                });
+
+                // Store user data only after successful submission
+                const userData = { name, email };
+                localStorage.setItem('userData', JSON.stringify(userData));
+            } else {
+                handleInvalidCodePopup(); // Handle invalid code popup
+            }
+        } catch (error) {
+            console.error('Error fetching valid codes:', error);
+            alert('Error validating the code. Please try again later.');
+        }
     }
-}
 
     // Function to handle invalid code popup
     function handleInvalidCodePopup() {
@@ -187,7 +195,7 @@ async function validateForm() {
             codeInput.focus(); // Focus on the code input field after dismissing the popup
         }
     }
-    
+
     // Call the function to check local storage on page load
     checkLocalStorage();
 });

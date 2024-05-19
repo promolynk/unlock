@@ -21,7 +21,7 @@ body {
     box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
     width: 90%;
     max-width: 400px;
-    margin: 25vh 20px auto;
+    margin: 25vh 15px auto;
 }
 
 .sib-form-container {
@@ -30,7 +30,7 @@ body {
 }
 
 #sib-form {
-    padding: 0 30px;
+    padding: 0 20px;
 }
 
 input[type="text"]::placeholder {

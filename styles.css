@@ -81,7 +81,7 @@ input[type="text"], button {
 
 
 input[type="text"].error::placeholder {
-    color: #E57373;
+    color: #EF9A9A;
     opacity: 1; /* Ensures placeholder is visible */
 }
 

@@ -120,79 +120,77 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function resetInputFields() {
-        const nameInput = document.getElementById('NAME');
-        const emailInput = document.getElementById('EMAIL');
+        document.getElementById('NAME').placeholder = 'Your Name';
+        document.getElementById('EMAIL').placeholder = 'Your Email Address';
+        resetCodeInputField();
+    }
+
+
+    function resetInputFields() {
         const codeInput = document.getElementById('CODE');
-
-        nameInput.placeholder = 'Your Name';
-        emailInput.placeholder = 'Your Email Address';
         codeInput.placeholder = 'Enter Code';
-
-        nameInput.classList.remove('error');
-        emailInput.classList.remove('error');
         codeInput.classList.remove('success', 'error');
-
-        nameInput.value = '';
-        emailInput.value = '';
         codeInput.value = '';
     }
 
-    async function validateForm() {
-        const name = document.getElementById('NAME').value.trim();
-        const email = document.getElementById('EMAIL').value.trim();
-        const codeInput = document.getElementById('CODE');
-        const code = codeInput.value.trim();
+async function validateForm() {
+    const name = document.getElementById('NAME').value.trim();
+    const email = document.getElementById('EMAIL').value.trim();
+    const codeInput = document.getElementById('CODE');
+    const code = codeInput.value.trim();
 
-        if (!validateEmail(email)) {
-            return;
-        }
+    if (!validateEmail(email)) {
+        return;
+    }
 
-        try {
-            const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
-            const data = await response.text();
-            const validCodes = data.split('\n');
+    try {
+        const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
+        const data = await response.text();
+        const validCodes = data.split('\n');
 
-            if (validCodes.includes(code)) {
-                const formData = new FormData();
-                formData.append('NAME', name);
-                formData.append('EMAIL', email);
-                formData.append('CODE', code);
+        if (validCodes.includes(code)) {
+            const formData = new FormData();
+            formData.append('NAME', name);
+            formData.append('EMAIL', email);
+            formData.append('CODE', code);
 
-                const successMessage = 0; // No delay
-                codeInput.placeholder = 'Discount unlocked!';
-                codeInput.classList.add('success');
-                codeInput.value = '';
+            const successMessage = 0; // No delay
+            codeInput.placeholder = 'Discount unlocked!';
+            codeInput.classList.add('success');
+            codeInput.value = '';
+            // Reset fields just before redirecting
+            setTimeout(() => {
+                // resetInputFields();
+                document.activeElement.blur();
+                window.location.href = 'https://www.ishortn.ink/' + code;
+            }, successMessage);
 
-                // Reset fields just before redirecting
-                setTimeout(() => {
-                    document.activeElement.blur();
-                    window.location.href = 'https://www.ishortn.ink/' + code;
-                }, successMessage);
 
                 // Submit the form data to Brevo
                 fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
-                        method: 'POST',
-                        body: formData,
-                        mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            console.error('Error:', response.statusText);
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
+                })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Error:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
 
-                const userData = { name, email };
-                localStorage.setItem('userData', JSON.stringify(userData));
-            } else {
-                handleInvalidCodeInput();
-            }
-        } catch (error) {
-            console.error('Error fetching valid codes:', error);
+            const userData = { name, email };
+            localStorage.setItem('userData', JSON.stringify(userData));
+        } else {
+            handleInvalidCodeInput();
         }
+    } catch (error) {
+        console.error('Error fetching valid codes:', error);
     }
+}
+
 
     function handleInvalidCodeInput() {
         const codeInput = document.getElementById('CODE');
@@ -202,11 +200,5 @@ document.addEventListener("DOMContentLoaded", function() {
         codeInput.focus();
     }
 
-    resetInputFields(); // Reset input fields on page load
     checkLocalStorage(); // Check local storage and populate fields if data is present
-});
-
-// Clear local storage when the user leaves the page
-window.addEventListener('beforeunload', function() {
-    localStorage.removeItem('userData');
 });

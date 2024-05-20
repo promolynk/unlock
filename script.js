@@ -62,16 +62,17 @@ document.addEventListener("DOMContentLoaded", function() {
         showNextButton();
     }
 
-    // Event listener for the next buttons
-    nextNameButton.addEventListener('click', function() {
-        const currentInput = formSteps[currentStep].querySelector('input');
-        const fieldName = currentInput.id === 'NAME' ? 'name' : '';
-        if (!validateInput(currentInput, fieldName)) {
-            return;
-        }
+nextNameButton.addEventListener('click', function() {
+    console.log("Next button clicked for Name");
+    const currentInput = formSteps[currentStep].querySelector('input');
+    const fieldName = currentInput.id === 'NAME' ? 'name' : '';
+    if (!validateInput(currentInput, fieldName)) {
+        return;
+    }
 
-        goToNextStep();
-    });
+    goToNextStep();
+});
+
 
     nextEmailButton.addEventListener('click', function() {
         const currentInput = formSteps[currentStep].querySelector('input');
@@ -108,23 +109,24 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Function to validate an input field
-    function validateInput(input, fieldName) {
-        const trimmedValue = input.value.trim();
-        if (!trimmedValue) {
-            input.placeholder = `Please enter your ${fieldName}`;
-            input.classList.add('error');
-            return false;
-        } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
-            input.placeholder = 'Please enter a valid email address';
-            input.value = ''; // Clear the email input field
-            input.classList.add('error');
-            input.focus();
-            return false;
-        }
-        input.classList.remove('error');
-        return true;
+// Function to validate an input field
+function validateInput(input, fieldName) {
+    const trimmedValue = input.value.trim();
+    if (!trimmedValue) {
+        input.placeholder = `Please enter your ${fieldName}`;
+        input.classList.add('error');
+        return false;
+    } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
+        input.placeholder = 'Please enter a valid email address';
+        input.value = ''; // Clear the email input field
+        input.classList.add('error');
+        input.focus();
+        return false;
     }
+    input.classList.remove('error'); // Remove the 'error' class
+    return true;
+}
+
 
     // Function to validate email format
     function validateEmail(email) {
@@ -138,7 +140,6 @@ async function validateForm() {
     const email = document.getElementById('EMAIL').value.trim();
     const code = document.getElementById('CODE').value.trim();
 
-    console.log("Entered code:", code); // Log the entered code
 
     if (!validateEmail(email)) {
         alert('Please enter a valid email address');
@@ -151,7 +152,6 @@ async function validateForm() {
         const data = await response.text();
         const validCodes = data.split('\n');
 
-        console.log("Valid codes:", validCodes); // Log the valid codes
 
         // Check if the entered code is in the list of valid codes
         if (validCodes.includes(code)) {
@@ -164,7 +164,8 @@ async function validateForm() {
             // Submit the form data to Brevo
             fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
                 method: 'POST',
-                body: formData
+                body: formData,
+    		mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
             })
             .then(response => {
                 if (response.ok) {
@@ -206,4 +207,3 @@ function handleInvalidCodeInput() {
 // Call the function to check local storage on page load
 checkLocalStorage();
 });
-

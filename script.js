@@ -132,6 +132,13 @@ document.addEventListener("DOMContentLoaded", function() {
         codeInput.value = '';
     }
 
+    function resetInputFields() {
+        const codeInput = document.getElementById('CODE');
+        codeInput.placeholder = 'Enter Code';
+        codeInput.classList.remove('success', 'error');
+        codeInput.value = '';
+    }
+
 async function validateForm() {
     const name = document.getElementById('NAME').value.trim();
     const email = document.getElementById('EMAIL').value.trim();
@@ -202,5 +209,6 @@ async function validateForm() {
         codeInput.focus();
     }
 
-    checkLocalStorage();
+    resetInputFields(); // Reset input fields on page load
+    checkLocalStorage(); // Check local storage and populate fields if data is present
 });

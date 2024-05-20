@@ -125,8 +125,7 @@ document.addEventListener("DOMContentLoaded", function() {
         resetCodeInputField();
     }
 
-
-    function resetInputFields() {
+    function resetCodeInputField() {
         const codeInput = document.getElementById('CODE');
         codeInput.placeholder = 'Enter Code';
         codeInput.classList.remove('success', 'error');
@@ -148,44 +147,50 @@ async function validateForm() {
         const data = await response.text();
         const validCodes = data.split('\n');
 
-        if (validCodes.includes(code)) {
-            const formData = new FormData();
-            formData.append('NAME', name);
-            formData.append('EMAIL', email);
-            formData.append('CODE', code);
+if (validCodes.includes(code)) {
+    const formData = new FormData();
+    formData.append('NAME', name);
+    formData.append('EMAIL', email);
+    formData.append('CODE', code);
 
-            const successMessage = 0; // No delay
-            codeInput.placeholder = 'Discount unlocked!';
-            codeInput.classList.add('success');
-            codeInput.value = '';
-            // Reset fields just before redirecting
-            setTimeout(() => {
-                // resetInputFields();
-                document.activeElement.blur();
-                window.location.href = 'https://www.ishortn.ink/' + code;
-            }, successMessage);
+    codeInput.classList.add('success');
+    // Add a transition class to enable CSS transitions
+    codeInput.classList.add('transition');
 
+    // Set placeholder and value after a short delay to allow transition effect
+    setTimeout(() => {
+        codeInput.placeholder = 'Discount unlocked!';
+        codeInput.value = '';
 
-                // Submit the form data to Brevo
-                fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
-                    method: 'POST',
-                    body: formData,
-                    mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
-                })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('Error:', response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+        // Reset fields just before redirecting
+        setTimeout(() => {
+            resetInputFields(); // Resetting all input fields
+            document.activeElement.blur();
+            window.location.href = 'https://www.ishortn.ink/' + code;
+        }, 2000); // Adjust the delay as needed
+    }, 0); // Adjust the delay as needed
 
-            const userData = { name, email };
-            localStorage.setItem('userData', JSON.stringify(userData));
-        } else {
-            handleInvalidCodeInput();
+    // Submit the form data to Brevo
+    fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
+        method: 'POST',
+        body: formData,
+        mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
+    })
+    .then(response => {
+        if (!response.ok) {
+            console.error('Error:', response.statusText);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+
+    const userData = { name, email };
+    localStorage.setItem('userData', JSON.stringify(userData));
+} else {
+    handleInvalidCodeInput();
+}
+
     } catch (error) {
         console.error('Error fetching valid codes:', error);
     }
@@ -200,5 +205,5 @@ async function validateForm() {
         codeInput.focus();
     }
 
-    checkLocalStorage(); 
+    checkLocalStorage();
 });

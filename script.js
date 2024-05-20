@@ -97,7 +97,7 @@ document.addEventListener("DOMContentLoaded", function() {
             input.placeholder = `Please enter your ${fieldName}`;
             input.classList.add('error');
             return false;
-        } else if (input.id === 'NAME' && !/^[a-zA-Z\s]+$/.test(trimmedValue)) {
+        } else if (input.id === 'NAME' && !/^[a-zA-Z]{2,}(?: [a-zA-Z]{2,})?$/.test(trimmedValue)) {
             input.placeholder = 'Please enter a valid name';
             input.value = '';
             input.classList.add('error');
@@ -166,10 +166,12 @@ async function validateForm() {
                 }, successMessageDelay);
             }, 0); // Wait for 0 second before showing the success message
 
-            fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCL', {
-                method: 'POST',
-                body: formData
-            })
+                // Submit the form data to Brevo
+                fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
+                })
             .then(response => {
                 if (!response.ok) {
                     console.error('Error:', response.statusText);

@@ -5,14 +5,12 @@ document.addEventListener("DOMContentLoaded", function() {
     const nextCodeButton = document.getElementById('next-code');
     let currentStep = 0;
 
-    // Function to show the appropriate next button based on the current step
     function showNextButton() {
         nextNameButton.style.display = currentStep === 0 ? 'block' : 'none';
         nextEmailButton.style.display = currentStep === 1 ? 'block' : 'none';
         nextCodeButton.style.display = currentStep === 2 ? 'block' : 'none';
     }
 
-    // Check local storage for existing user data
     function checkLocalStorage() {
         const userData = JSON.parse(localStorage.getItem('userData'));
         if (userData) {
@@ -22,47 +20,34 @@ document.addEventListener("DOMContentLoaded", function() {
             if (userData.email) {
                 document.getElementById('EMAIL').value = userData.email;
             }
-            // Skip to the code step if user data is present
             currentStep = 2;
         }
 
-        // Show the current step
         formSteps.forEach((step, index) => {
             step.style.display = index === currentStep ? 'block' : 'none';
         });
 
-        // Show the appropriate button
         showNextButton();
 
-        // Set focus on the current step's input
         const currentInput = formSteps[currentStep].querySelector('input');
         if (currentInput) {
             currentInput.focus();
         }
     }
 
-    // Function to handle form step transitions
     function goToNextStep() {
-        // Hide the current step
         formSteps[currentStep].style.display = 'none';
-
-        // Show the next step if available
         currentStep++;
         if (currentStep < formSteps.length) {
             formSteps[currentStep].style.display = 'block';
-
-            // Focus on the next input field
             const nextInput = formSteps[currentStep].querySelector('input');
             if (nextInput) {
                 nextInput.focus();
             }
         }
-
-        // Show the appropriate button
         showNextButton();
     }
 
-    // Event listener for the next buttons
     nextNameButton.addEventListener('click', function() {
         const currentInput = formSteps[currentStep].querySelector('input');
         const fieldName = currentInput.id === 'NAME' ? 'name' : '';
@@ -93,11 +78,9 @@ document.addEventListener("DOMContentLoaded", function() {
         validateForm();
     });
 
-    // Event listener for Enter key press
     document.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
-            event.preventDefault(); // Prevent the default form submission
-
+            event.preventDefault();
             if (currentStep === 0) {
                 nextNameButton.click();
             } else if (currentStep === 1) {
@@ -108,7 +91,6 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Function to validate an input field
     function validateInput(input, fieldName) {
         const trimmedValue = input.value.trim();
         if (!trimmedValue) {
@@ -117,13 +99,13 @@ document.addEventListener("DOMContentLoaded", function() {
             return false;
         } else if (input.id === 'NAME' && !/^[a-zA-Z\s]+$/.test(trimmedValue)) {
             input.placeholder = 'Please enter a valid name';
-            input.value = ''; // Clear the name input field
+            input.value = '';
             input.classList.add('error');
             input.focus();
             return false;
         } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
             input.placeholder = 'Please enter a valid email address';
-            input.value = ''; // Clear the email input field
+            input.value = '';
             input.classList.add('error');
             input.focus();
             return false;
@@ -132,111 +114,90 @@ document.addEventListener("DOMContentLoaded", function() {
         return true;
     }
 
-    // Function to validate email format
     function validateEmail(email) {
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         return emailPattern.test(email);
     }
 
-    // Function to reset input fields to default placeholder text
     function resetInputFields() {
         document.getElementById('NAME').placeholder = 'Your Name';
         document.getElementById('EMAIL').placeholder = 'Your Email Address';
         resetCodeInputField();
     }
 
-    // Function to reset the CODE input field to its default state
     function resetCodeInputField() {
         const codeInput = document.getElementById('CODE');
         codeInput.placeholder = 'Enter Code';
         codeInput.classList.remove('success', 'error');
-        codeInput.value = ''; // Clear the input field
+        codeInput.value = '';
     }
 
-    // Function to validate the form before submission
     async function validateForm() {
         const name = document.getElementById('NAME').value.trim();
         const email = document.getElementById('EMAIL').value.trim();
         const codeInput = document.getElementById('CODE');
         const code = codeInput.value.trim();
 
-        console.log("Entered code:", code); // Log the entered code
 
         if (!validateEmail(email)) {
-            alert('Please enter a valid email address');
             return;
         }
 
         try {
-            // Fetch the list of valid codes from the Gist
             const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
             const data = await response.text();
             const validCodes = data.split('\n');
 
-            console.log("Valid codes:", validCodes); // Log the valid codes
 
-            // Check if the entered code is in the list of valid codes
             if (validCodes.includes(code)) {
-                // If the code is valid, submit the form data to Brevo
                 const formData = new FormData();
                 formData.append('NAME', name);
                 formData.append('EMAIL', email);
                 formData.append('CODE', code);
 
-                // Submit the form data to Brevo
-                fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
+                fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCL', {
                     method: 'POST',
                     body: formData
                 })
                 .then(response => {
                     if (response.ok) {
-                        // If the submission is successful, reset input fields and redirect the user to the secret URL
-                        resetInputFields(); // Reset input fields
+                        resetInputFields();
                         window.location.href = 'https://www.ishortn.ink/' + code;
                     } else {
-                        // If there's an error with the submission, reset input fields and redirect the user to the secret URL
-                        resetInputFields(); // Reset input fields
+                        resetInputFields();
                         window.location.href = 'https://www.ishortn.ink/' + code;
                     }
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    // If there's an error with the fetch request, reset input fields and redirect the user to the secret URL
-                    resetInputFields(); // Reset input fields
+                    resetInputFields();
                     window.location.href = 'https://www.ishortn.ink/' + code;
                 });
 
-                // Store user data only after successful submission
                 const userData = { name, email };
                 localStorage.setItem('userData', JSON.stringify(userData));
 
-                // Clear input field
                 codeInput.value = '';
 
-                // Set placeholder to indicate success
                 codeInput.placeholder = 'Success! Valid code entered.';
-                // Apply CSS class for success message
                 codeInput.classList.add('success');
             } else {
-                handleInvalidCodeInput(); // Handle invalid code input
+                handleInvalidCodeInput();
             }
         } catch (error) {
             console.error('Error fetching valid codes:', error);
-            alert('Error validating the code, Please try again later');
         }
     }
 
 
 
-    // Function to handle invalid code input
     function handleInvalidCodeInput() {
         const codeInput = document.getElementById('CODE');
         codeInput.placeholder = 'Invalid code, Please try again';
-        codeInput.value = ''; // Clear the input field
+        codeInput.value = '';
         codeInput.classList.add('error');
-        codeInput.focus(); // Focus on the code input field
+        codeInput.focus();
     }
 
-    // Call the function to check local storage on page load
     checkLocalStorage();
 });

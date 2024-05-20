@@ -125,12 +125,6 @@ document.addEventListener("DOMContentLoaded", function() {
         resetCodeInputField();
     }
 
-    function resetCodeInputField() {
-        const codeInput = document.getElementById('CODE');
-        codeInput.placeholder = 'Enter Code';
-        codeInput.classList.remove('success', 'error');
-        codeInput.value = '';
-    }
 
     function resetInputFields() {
         const codeInput = document.getElementById('CODE');
@@ -209,6 +203,5 @@ async function validateForm() {
         codeInput.focus();
     }
 
-    resetInputFields(); // Reset input fields on page load
     checkLocalStorage(); // Check local storage and populate fields if data is present
 });

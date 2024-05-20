@@ -153,18 +153,17 @@ async function validateForm() {
             formData.append('EMAIL', email);
             formData.append('CODE', code);
 
-            // Simulate a delay before showing the success message
+            const successMessage = 0; // No delay
+            codeInput.placeholder = 'Discount unlocked!';
+            codeInput.classList.add('success');
+            codeInput.value = '';
+            // Reset fields just before redirecting
             setTimeout(() => {
-                const successMessageDelay = 2000; // 2 seconds
-                codeInput.placeholder = 'Discount unlocked!';
-                codeInput.classList.add('success');
-                codeInput.value = '';
-                // Reset fields just before redirecting
-                setTimeout(() => {
-                    resetInputFields();
-                    window.location.href = 'https://www.ishortn.ink/' + code;
-                }, successMessageDelay);
-            }, 0); // Wait for 0 second before showing the success message
+                // resetInputFields();
+                document.activeElement.blur();
+                window.location.href = 'https://www.ishortn.ink/' + code;
+            }, successMessage);
+
 
                 // Submit the form data to Brevo
                 fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {

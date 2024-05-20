@@ -11,39 +11,21 @@ document.addEventListener("DOMContentLoaded", function() {
         nextCodeButton.style.display = currentStep === 2 ? 'block' : 'none';
     }
 
-function checkLocalStorage() {
-    const userData = JSON.parse(localStorage.getItem('userData'));
-    if (userData) {
-        if (userData.name) {
-            document.getElementById('NAME').value = userData.name;
+    function checkLocalStorage() {
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        if (userData) {
+            if (userData.name) {
+                document.getElementById('NAME').value = userData.name;
+            }
+            if (userData.email) {
+                document.getElementById('EMAIL').value = userData.email;
+            }
+            currentStep = 2;
         }
-        if (userData.email) {
-            document.getElementById('EMAIL').value = userData.email;
-        }
-        currentStep = 2;
-    }
 
-    formSteps.forEach((step, index) => {
-        step.style.display = index === currentStep ? 'block' : 'none';
-    });
-
-    showNextButton();
-
-    const currentInput = formSteps[currentStep].querySelector('input');
-    if (currentInput) {
-        currentInput.focus();
-    }
-
-    // Clear input fields if the page is loaded from cache
-    if (isPageLoadedFromCache()) {
-        resetInputFields();
-    }
-}
-
-function isPageLoadedFromCache() {
-    return performance.getEntriesByType("navigation")[0].type === "navigate";
-}
-
+        formSteps.forEach((step, index) => {
+            step.style.display = index === currentStep ? 'block' : 'none';
+        });
 
         showNextButton();
 
@@ -51,6 +33,15 @@ function isPageLoadedFromCache() {
         if (currentInput) {
             currentInput.focus();
         }
+
+        // Clear input fields if page is loaded from cache
+        if (isPageLoadedFromCache()) {
+            resetInputFields();
+        }
+    }
+
+    function isPageLoadedFromCache() {
+        return performance.getEntriesByType("navigation")[0].type === "navigate";
     }
 
     function goToNextStep() {
@@ -138,51 +129,49 @@ function isPageLoadedFromCache() {
     }
 
     function resetInputFields() {
-        document.getElementById('NAME').placeholder = 'Your Name';
-        document.getElementById('EMAIL').placeholder = 'Your Email Address';
+        document.getElementById('NAME').value = '';
+        document.getElementById('EMAIL').value = '';
         resetCodeInputField();
     }
 
-
-    function resetInputFields() {
+    function resetCodeInputField() {
         const codeInput = document.getElementById('CODE');
-        codeInput.placeholder = 'Enter Code';
-        codeInput.classList.remove('success', 'error');
         codeInput.value = '';
+        codeInput.classList.remove('success', 'error');
+        codeInput.placeholder = 'Enter Code';
     }
 
-async function validateForm() {
-    const name = document.getElementById('NAME').value.trim();
-    const email = document.getElementById('EMAIL').value.trim();
-    const codeInput = document.getElementById('CODE');
-    const code = codeInput.value.trim();
+    async function validateForm() {
+        const name = document.getElementById('NAME').value.trim();
+        const email = document.getElementById('EMAIL').value.trim();
+        const codeInput = document.getElementById('CODE');
+        const code = codeInput.value.trim();
 
-    if (!validateEmail(email)) {
-        return;
-    }
+        if (!validateEmail(email)) {
+            return;
+        }
 
-    try {
-        const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
-        const data = await response.text();
-        const validCodes = data.split('\n');
+        try {
+            const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
+            const data = await response.text();
+            const validCodes = data.split('\n');
 
-        if (validCodes.includes(code)) {
-            const formData = new FormData();
-            formData.append('NAME', name);
-            formData.append('EMAIL', email);
-            formData.append('CODE', code);
+            if (validCodes.includes(code)) {
+                const formData = new FormData();
+                formData.append('NAME', name);
+                formData.append('EMAIL', email);
+                formData.append('CODE', code);
 
-            const successMessage = 0; // No delay
-            codeInput.placeholder = 'Discount unlocked!';
-            codeInput.classList.add('success');
-            codeInput.value = '';
-            // Reset fields just before redirecting
-            setTimeout(() => {
-                // resetInputFields();
-                document.activeElement.blur();
-                window.location.href = 'https://www.ishortn.ink/' + code;
-            }, successMessage);
+                const successMessage = 0; // No delay
+                codeInput.placeholder = 'Discount unlocked!';
+                codeInput.classList.add('success');
+                codeInput.value = '';
 
+                // Reset fields just before redirecting
+                setTimeout(() => {
+                    document.activeElement.blur();
+                    window.location.href = 'https://www.ishortn.ink/' + code;
+                }, successMessage);
 
                 // Submit the form data to Brevo
                 fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
@@ -190,25 +179,24 @@ async function validateForm() {
                     body: formData,
                     mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
                 })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('Error:', response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Error:', response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
 
-            const userData = { name, email };
-            localStorage.setItem('userData', JSON.stringify(userData));
-        } else {
-            handleInvalidCodeInput();
+                const userData = { name, email };
+                localStorage.setItem('userData', JSON.stringify(userData));
+            } else {
+                handleInvalidCodeInput();
+            }
+        } catch (error) {
+            console.error('Error fetching valid codes:', error);
         }
-    } catch (error) {
-        console.error('Error fetching valid codes:', error);
     }
-}
-
 
     function handleInvalidCodeInput() {
         const codeInput = document.getElementById('CODE');
@@ -219,4 +207,9 @@ async function validateForm() {
     }
 
     checkLocalStorage(); // Check local storage and populate fields if data is present
+});
+
+// Clear local storage when the user leaves the page
+window.addEventListener('beforeunload', function() {
+    localStorage.removeItem('userData');
 });

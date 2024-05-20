@@ -11,21 +11,39 @@ document.addEventListener("DOMContentLoaded", function() {
         nextCodeButton.style.display = currentStep === 2 ? 'block' : 'none';
     }
 
-    function checkLocalStorage() {
-        const userData = JSON.parse(localStorage.getItem('userData'));
-        if (userData) {
-            if (userData.name) {
-                document.getElementById('NAME').value = userData.name;
-            }
-            if (userData.email) {
-                document.getElementById('EMAIL').value = userData.email;
-            }
-            currentStep = 2;
+function checkLocalStorage() {
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    if (userData) {
+        if (userData.name) {
+            document.getElementById('NAME').value = userData.name;
         }
+        if (userData.email) {
+            document.getElementById('EMAIL').value = userData.email;
+        }
+        currentStep = 2;
+    }
 
-        formSteps.forEach((step, index) => {
-            step.style.display = index === currentStep ? 'block' : 'none';
-        });
+    formSteps.forEach((step, index) => {
+        step.style.display = index === currentStep ? 'block' : 'none';
+    });
+
+    showNextButton();
+
+    const currentInput = formSteps[currentStep].querySelector('input');
+    if (currentInput) {
+        currentInput.focus();
+    }
+
+    // Clear input fields if the page is loaded from cache
+    if (isPageLoadedFromCache()) {
+        resetInputFields();
+    }
+}
+
+function isPageLoadedFromCache() {
+    return performance.getEntriesByType("navigation")[0].type === "navigate";
+}
+
 
         showNextButton();
 

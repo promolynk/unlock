@@ -12,34 +12,56 @@ document.addEventListener("DOMContentLoaded", function() {
         nextCodeButton.style.display = currentStep === 2 ? 'block' : 'none';
     }
 
-    // Check local storage for existing user data
-    function checkLocalStorage() {
-        const userData = JSON.parse(localStorage.getItem('userData'));
-        if (userData) {
-            if (userData.name) {
-                document.getElementById('NAME').value = userData.name;
-            }
-            if (userData.email) {
-                document.getElementById('EMAIL').value = userData.email;
-            }
-            // Skip to the code step if user data is present
-            currentStep = 2;
+ // Check local storage for existing user data
+function checkLocalStorage() {
+    const userData = JSON.parse(localStorage.getItem('userData'));
+    if (userData) {
+        if (userData.name) {
+            document.getElementById('NAME').value = userData.name;
         }
-
-        // Show the current step
-        formSteps.forEach((step, index) => {
-            step.style.display = index === currentStep ? 'block' : 'none';
-        });
-
-        // Show the appropriate button
-        showNextButton();
-
-        // Set focus on the current step's input
-        const currentInput = formSteps[currentStep].querySelector('input');
-        if (currentInput) {
-            currentInput.focus();
+        if (userData.email) {
+            document.getElementById('EMAIL').value = userData.email;
         }
+        // Skip to the code step if user data is present
+        currentStep = 2;
     }
+
+    // Show the current step
+    formSteps.forEach((step, index) => {
+        step.style.display = index === currentStep ? 'block' : 'none';
+    });
+
+    // Show the appropriate button
+    showNextButton();
+
+    // Set focus on the current step's input
+    const currentInput = formSteps[currentStep].querySelector('input');
+    if (currentInput) {
+        currentInput.focus();
+    }
+
+    // Reset placeholder texts
+    resetPlaceholderTexts();
+}
+
+// Function to reset placeholder texts
+function resetPlaceholderTexts() {
+    const nameInput = document.getElementById('NAME');
+    const emailInput = document.getElementById('EMAIL');
+    const codeInput = document.getElementById('CODE');
+
+    // Reset placeholder texts if input fields are empty
+    if (!nameInput.value.trim()) {
+        nameInput.placeholder = 'Enter your name';
+    }
+    if (!emailInput.value.trim()) {
+        emailInput.placeholder = 'Enter your email address';
+    }
+    if (!codeInput.value.trim()) {
+        codeInput.placeholder = 'Enter secret code';
+    }
+}
+
 
     // Function to handle form step transitions
     function goToNextStep() {
@@ -108,23 +130,36 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Function to validate an input field
-    function validateInput(input, fieldName) {
-        const trimmedValue = input.value.trim();
-        if (!trimmedValue) {
-            input.placeholder = `Please enter your ${fieldName}`;
-            input.classList.add('error');
-            return false;
-        } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
-            input.placeholder = 'Please enter a valid email address';
-            input.value = ''; // Clear the email input field
-            input.classList.add('error');
-            input.focus();
-            return false;
-        }
-        input.classList.remove('error');
-        return true;
+// Function to validate an input field
+function validateInput(input, fieldName) {
+    const trimmedValue = input.value.trim();
+    if (!trimmedValue) {
+        input.placeholder = `Please enter your ${fieldName}`;
+        input.classList.add('error');
+        return false;
+    } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
+        input.placeholder = 'Please enter a valid email address';
+        input.value = ''; // Clear the email input field
+        input.classList.add('error');
+        input.focus();
+        return false;
+    } else if (input.id === 'NAME' && !validateName(trimmedValue)) {
+        input.placeholder = 'Name should only contain letters';
+        input.value = ''; // Clear the name input field
+        input.classList.add('error');
+        input.focus();
+        return false;
     }
+    input.classList.remove('error');
+    return true;
+}
+
+// Function to validate name format
+function validateName(name) {
+    const namePattern = /^[a-zA-Z]+$/; // Only allow alphabets
+    return namePattern.test(name);
+}
+
 
     // Function to validate email format
     function validateEmail(email) {
@@ -138,7 +173,6 @@ async function validateForm() {
     const email = document.getElementById('EMAIL').value.trim();
     const code = document.getElementById('CODE').value.trim();
 
-    console.log("Entered code:", code); // Log the entered code
 
     if (!validateEmail(email)) {
         alert('Please enter a valid email address');
@@ -151,7 +185,6 @@ async function validateForm() {
         const data = await response.text();
         const validCodes = data.split('\n');
 
-        console.log("Valid codes:", validCodes); // Log the valid codes
 
         // Check if the entered code is in the list of valid codes
         if (validCodes.includes(code)) {

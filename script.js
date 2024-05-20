@@ -156,7 +156,7 @@ async function validateForm() {
             // Simulate a delay before showing the success message
             setTimeout(() => {
                 const successMessageDelay = 2000; // 2 seconds
-                codeInput.placeholder = 'Success! Valid code entered.';
+                codeInput.placeholder = 'Discount unlocked!';
                 codeInput.classList.add('success');
                 codeInput.value = '';
                 // Reset fields just before redirecting

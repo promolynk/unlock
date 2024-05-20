@@ -147,6 +147,8 @@ async function validateForm() {
         const data = await response.text();
         const validCodes = data.split('\n');
 
+// Inside the validateForm function
+
 if (validCodes.includes(code)) {
     const formData = new FormData();
     formData.append('NAME', name);
@@ -164,7 +166,7 @@ if (validCodes.includes(code)) {
 
         // Reset fields just before redirecting
         setTimeout(() => {
-            resetInputFields(); // Resetting all input fields
+            resetInputFields(); // Resetting all input fields to default placeholders
             document.activeElement.blur();
             window.location.href = 'https://www.ishortn.ink/' + code;
         }, 2000); // Adjust the delay as needed
@@ -190,6 +192,7 @@ if (validCodes.includes(code)) {
 } else {
     handleInvalidCodeInput();
 }
+
 
     } catch (error) {
         console.error('Error fetching valid codes:', error);

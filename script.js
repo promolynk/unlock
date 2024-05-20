@@ -121,16 +121,26 @@ function validateInput(input, fieldName) {
         input.placeholder = `Please enter your ${fieldName}`;
         input.classList.add('error');
         return false;
-    } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
-        input.placeholder = 'Please enter a valid email address';
-        input.value = ''; // Clear the email input field
-        input.classList.add('error');
-        input.focus();
-        return false;
+    } else if (input.id === 'EMAIL') {
+        // Check if the email input field has been modified
+        if (!input.hasAttribute('data-modified')) {
+            // If not modified, don't perform email validation
+            input.setAttribute('data-modified', 'true');
+            return true;
+        }
+        // If modified, perform email validation
+        if (!validateEmail(trimmedValue)) {
+            input.placeholder = 'Please enter a valid email address';
+            input.value = ''; // Clear the email input field
+            input.classList.add('error');
+            input.focus();
+            return false;
+        }
     }
     input.classList.remove('error'); // Remove the 'error' class
     return true;
 }
+
 
 
     // Function to validate email format

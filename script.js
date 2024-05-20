@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", function() {
         nextCodeButton.style.display = currentStep === 2 ? 'block' : 'none';
     }
 
- // Check local storage for existing user data
+// Check local storage for existing user data
 function checkLocalStorage() {
     const userData = JSON.parse(localStorage.getItem('userData'));
     if (userData) {
@@ -50,17 +50,15 @@ function resetPlaceholderTexts() {
     const emailInput = document.getElementById('EMAIL');
     const codeInput = document.getElementById('CODE');
 
-    // Reset placeholder texts if input fields are empty
-    if (!nameInput.value.trim()) {
-        nameInput.placeholder = 'Enter your name';
-    }
-    if (!emailInput.value.trim()) {
-        emailInput.placeholder = 'Enter your email address';
-    }
-    if (!codeInput.value.trim()) {
-        codeInput.placeholder = 'Enter secret code';
-    }
+    // Reset placeholder texts
+    nameInput.placeholder = 'Enter your name';
+    emailInput.placeholder = 'Enter your email address';
+    codeInput.placeholder = 'Enter secret code';
 }
+
+// Call the function to check local storage on page load
+checkLocalStorage();
+
 
 
     // Function to handle form step transitions

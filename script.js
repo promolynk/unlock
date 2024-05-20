@@ -132,62 +132,64 @@ document.addEventListener("DOMContentLoaded", function() {
         codeInput.value = '';
     }
 
-    async function validateForm() {
-        const name = document.getElementById('NAME').value.trim();
-        const email = document.getElementById('EMAIL').value.trim();
-        const codeInput = document.getElementById('CODE');
-        const code = codeInput.value.trim();
+async function validateForm() {
+    const name = document.getElementById('NAME').value.trim();
+    const email = document.getElementById('EMAIL').value.trim();
+    const codeInput = document.getElementById('CODE');
+    const code = codeInput.value.trim();
 
+    if (!validateEmail(email)) {
+        return;
+    }
 
-        if (!validateEmail(email)) {
-            return;
-        }
+    try {
+        const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
+        const data = await response.text();
+        const validCodes = data.split('\n');
 
-        try {
-            const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
-            const data = await response.text();
-            const validCodes = data.split('\n');
+        if (validCodes.includes(code)) {
+            const formData = new FormData();
+            formData.append('NAME', name);
+            formData.append('EMAIL', email);
+            formData.append('CODE', code);
 
-
-            if (validCodes.includes(code)) {
-                const formData = new FormData();
-                formData.append('NAME', name);
-                formData.append('EMAIL', email);
-                formData.append('CODE', code);
-
-                fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCL', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (response.ok) {
-                        resetInputFields();
-                        window.location.href = 'https://www.ishortn.ink/' + code;
-                    } else {
-                        resetInputFields();
-                        window.location.href = 'https://www.ishortn.ink/' + code;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    resetInputFields();
-                    window.location.href = 'https://www.ishortn.ink/' + code;
-                });
-
-                const userData = { name, email };
-                localStorage.setItem('userData', JSON.stringify(userData));
-
-                codeInput.value = '';
-
+            // Simulate a delay before showing the success message
+            setTimeout(() => {
+                const successMessageDelay = 2000; // 2 seconds
                 codeInput.placeholder = 'Success! Valid code entered.';
                 codeInput.classList.add('success');
-            } else {
-                handleInvalidCodeInput();
-            }
-        } catch (error) {
-            console.error('Error fetching valid codes:', error);
+                codeInput.value = '';
+                // Reset fields just before redirecting
+                setTimeout(() => {
+                    resetInputFields();
+                    window.location.href = 'https://www.ishortn.ink/' + code;
+                }, successMessageDelay);
+            }, 0); // Wait for 0 second before showing the success message
+
+            fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCL', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Error:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            const userData = { name, email };
+            localStorage.setItem('userData', JSON.stringify(userData));
+        } else {
+            handleInvalidCodeInput();
         }
+    } catch (error) {
+        console.error('Error fetching valid codes:', error);
     }
+}
+
+
 
 
 

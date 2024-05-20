@@ -120,3 +120,21 @@ input[type="text"] {
     box-shadow: 0px 4px 8px -3px rgba(0, 0, 0, 0.5), 0px -0.5px 4px -2px rgba(0, 0, 0, 0.5);
     /* Darker shadow with less visibility from top */
 }
+
+.sib-form-block__button {
+    background-color: #ee1d52;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.3s, color 0.3s; /* Add transition for smoother color change */
+}
+
+/* Hover state */
+.sib-form-block__button:hover {
+    background-color: #cc1a47; /* Darker pink on hover */
+}
+
+/* Active state */
+.sib-form-block__button:active {
+    background-color: #b0173a; /* Even darker pink when clicked */
+}
+

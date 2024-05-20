@@ -115,6 +115,12 @@ document.addEventListener("DOMContentLoaded", function() {
             input.placeholder = `Please enter your ${fieldName}`;
             input.classList.add('error');
             return false;
+        } else if (input.id === 'NAME' && !/^[a-zA-Z\s]+$/.test(trimmedValue)) {
+            input.placeholder = 'Please enter a valid name';
+            input.value = ''; // Clear the name input field
+            input.classList.add('error');
+            input.focus();
+            return false;
         } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
             input.placeholder = 'Please enter a valid email address';
             input.value = ''; // Clear the email input field
@@ -142,7 +148,7 @@ document.addEventListener("DOMContentLoaded", function() {
     // Function to reset the CODE input field to its default state
     function resetCodeInputField() {
         const codeInput = document.getElementById('CODE');
-        codeInput.placeholder = 'Enter Secret Code';
+        codeInput.placeholder = 'Enter Code';
         codeInput.classList.remove('success', 'error');
         codeInput.value = ''; // Clear the input field
     }

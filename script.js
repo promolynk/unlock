@@ -12,39 +12,34 @@ document.addEventListener("DOMContentLoaded", function() {
         nextCodeButton.style.display = currentStep === 2 ? 'block' : 'none';
     }
 
-function checkLocalStorage() {
-    // Always reset input fields
-    document.getElementById('NAME').value = '';
-    document.getElementById('EMAIL').value = '';
-    document.getElementById('CODE').value = '';
-
-    const userData = JSON.parse(localStorage.getItem('userData'));
-    if (userData) {
-        if (userData.name) {
-            document.getElementById('NAME').value = userData.name;
+    // Check local storage for existing user data
+    function checkLocalStorage() {
+        const userData = JSON.parse(localStorage.getItem('userData'));
+        if (userData) {
+            if (userData.name) {
+                document.getElementById('NAME').value = userData.name;
+            }
+            if (userData.email) {
+                document.getElementById('EMAIL').value = userData.email;
+            }
+            // Skip to the code step if user data is present
+            currentStep = 2;
         }
-        if (userData.email) {
-            document.getElementById('EMAIL').value = userData.email;
+
+        // Show the current step
+        formSteps.forEach((step, index) => {
+            step.style.display = index === currentStep ? 'block' : 'none';
+        });
+
+        // Show the appropriate button
+        showNextButton();
+
+        // Set focus on the current step's input
+        const currentInput = formSteps[currentStep].querySelector('input');
+        if (currentInput) {
+            currentInput.focus();
         }
-        // Skip to the code step if user data is present
-        currentStep = 2;
     }
-
-    // Show the current step
-    formSteps.forEach((step, index) => {
-        step.style.display = index === currentStep ? 'block' : 'none';
-    });
-
-    // Show the appropriate button
-    showNextButton();
-
-    // Set focus on the current step's input
-    const currentInput = formSteps[currentStep].querySelector('input');
-    if (currentInput) {
-        currentInput.focus();
-    }
-}
-
 
     // Function to handle form step transitions
     function goToNextStep() {
@@ -67,17 +62,16 @@ function checkLocalStorage() {
         showNextButton();
     }
 
-nextNameButton.addEventListener('click', function() {
-    console.log("Next button clicked for Name");
-    const currentInput = formSteps[currentStep].querySelector('input');
-    const fieldName = currentInput.id === 'NAME' ? 'name' : '';
-    if (!validateInput(currentInput, fieldName)) {
-        return;
-    }
+    // Event listener for the next buttons
+    nextNameButton.addEventListener('click', function() {
+        const currentInput = formSteps[currentStep].querySelector('input');
+        const fieldName = currentInput.id === 'NAME' ? 'name' : '';
+        if (!validateInput(currentInput, fieldName)) {
+            return;
+        }
 
-    goToNextStep();
-});
-
+        goToNextStep();
+    });
 
     nextEmailButton.addEventListener('click', function() {
         const currentInput = formSteps[currentStep].querySelector('input');
@@ -114,34 +108,23 @@ nextNameButton.addEventListener('click', function() {
         }
     });
 
-// Function to validate an input field
-function validateInput(input, fieldName) {
-    const trimmedValue = input.value.trim();
-    if (!trimmedValue) {
-        input.placeholder = `Please enter your ${fieldName}`;
-        input.classList.add('error');
-        return false;
-    } else if (input.id === 'EMAIL') {
-        // Check if the email input field has been modified
-        if (!input.hasAttribute('data-modified')) {
-            // If not modified, don't perform email validation
-            input.setAttribute('data-modified', 'true');
-            return true;
-        }
-        // If modified, perform email validation
-        if (!validateEmail(trimmedValue)) {
+    // Function to validate an input field
+    function validateInput(input, fieldName) {
+        const trimmedValue = input.value.trim();
+        if (!trimmedValue) {
+            input.placeholder = `Please enter your ${fieldName}`;
+            input.classList.add('error');
+            return false;
+        } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
             input.placeholder = 'Please enter a valid email address';
             input.value = ''; // Clear the email input field
             input.classList.add('error');
             input.focus();
             return false;
         }
+        input.classList.remove('error');
+        return true;
     }
-    input.classList.remove('error'); // Remove the 'error' class
-    return true;
-}
-
-
 
     // Function to validate email format
     function validateEmail(email) {
@@ -155,6 +138,7 @@ async function validateForm() {
     const email = document.getElementById('EMAIL').value.trim();
     const code = document.getElementById('CODE').value.trim();
 
+    console.log("Entered code:", code); // Log the entered code
 
     if (!validateEmail(email)) {
         alert('Please enter a valid email address');
@@ -167,6 +151,7 @@ async function validateForm() {
         const data = await response.text();
         const validCodes = data.split('\n');
 
+        console.log("Valid codes:", validCodes); // Log the valid codes
 
         // Check if the entered code is in the list of valid codes
         if (validCodes.includes(code)) {
@@ -179,8 +164,7 @@ async function validateForm() {
             // Submit the form data to Brevo
             fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
                 method: 'POST',
-                body: formData,
-    		mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
+                body: formData
             })
             .then(response => {
                 if (response.ok) {

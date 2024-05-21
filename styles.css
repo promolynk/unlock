@@ -33,7 +33,7 @@ body {
 }
 
 input[type="text"]::placeholder {
-    color: #808080;
+    color: #9E9E9E;
 }
 
 input[type="text"],

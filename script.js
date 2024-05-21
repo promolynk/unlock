@@ -91,22 +91,14 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
+    // Add an event listener for the 'pageshow' event
     window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-            if (isMobile) {
-                window.location.reload();
-            } else {
-                checkLocalStorage();
-            }
+            window.location.reload();
+        } else {
+            checkLocalStorage();
         }
     });
-
-    function capitalizeWords(name) {
-        return name.replace(/\b\w/g, function(char) {
-            return char.toUpperCase();
-        });
-    }
 
     function validateInput(input, fieldName) {
         const trimmedValue = input.value.trim();
@@ -150,68 +142,70 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     async function validateForm() {
-        const nameInput = document.getElementById('NAME');
-        const emailInput = document.getElementById('EMAIL');
-        const codeInput = document.getElementById('CODE');
+    const name = document.getElementById('NAME').value.trim();
+    const email = document.getElementById('EMAIL').value.trim();
+    const codeInput = document.getElementById('CODE');
+    const code = codeInput.value.trim();
 
-        let name = nameInput.value.trim();
-        let email = emailInput.value.trim();
-        let code = codeInput.value.trim();
-
-        if (!validateEmail(email)) {
-            return;
-        }
-
-        name = capitalizeWords(name);
-        nameInput.value = name;
-
-        try {
-            const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
-            const data = await response.text();
-            const validCodes = data.split('\n');
-
-            if (validCodes.includes(code)) {
-                const formData = new FormData();
-                formData.append('NAME', name);
-                formData.append('EMAIL', email);
-                formData.append('CODE', code);
-
-                codeInput.classList.add('success');
-                codeInput.classList.add('transition');
-
-                setTimeout(() => {
-                    codeInput.placeholder = 'Success, Redirecting you...';
-                    codeInput.value = '';
-
-                    setTimeout(() => {
-                        document.activeElement.blur();
-                        window.location.href = 'https://www.ishortn.ink/' + code;
-                    }, 1000);
-                }, 0);
-
-                fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
-                    method: 'POST',
-                    body: formData,
-                    mode: 'no-cors'
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        console.error('Error:', response.statusText);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-
-                const userData = { name, email };
-                localStorage.setItem('userData', JSON.stringify(userData));
-            } else {
-                handleInvalidCodeInput();
-            }
-        } catch (error) {
-            console.error('Error fetching valid codes:', error);
-        }
+    if (!validateEmail(email)) {
+        return;
     }
+
+    try {
+        const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
+        const data = await response.text();
+        const validCodes = data.split('\n');
+
+        if (validCodes.includes(code)) {
+            const formData = new FormData();
+            formData.append('NAME', name);
+            formData.append('EMAIL', email);
+            formData.append('CODE', code);
+
+            codeInput.classList.add('success');
+            // Add a transition class to enable CSS transitions
+            codeInput.classList.add('transition');
+
+            // Set placeholder and value after a short delay to allow transition effect
+            setTimeout(() => {
+                codeInput.placeholder = 'Success, Redirecting you...';
+                codeInput.value = '';
+
+                // Remove focus from the input field
+                codeInput.blur();
+
+                // Reset fields just before redirecting
+                setTimeout(() => {
+                    document.activeElement.blur();
+                    window.location.href = 'https://www.ishortn.ink/' + code;
+                }, 1000); // Adjust the delay as needed
+            }, 0); // Adjust the delay as needed
+
+            // Submit the form data to Brevo
+            fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.error('Error:', response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+
+            const userData = { name, email };
+            localStorage.setItem('userData', JSON.stringify(userData));
+        } else {
+            handleInvalidCodeInput();
+        }
+    } catch (error) {
+        console.error('Error fetching valid codes:', error);
+    }
+}
+
 
     function handleInvalidCodeInput() {
         const codeInput = document.getElementById('CODE');
@@ -220,17 +214,6 @@ document.addEventListener("DOMContentLoaded", function() {
         codeInput.classList.add('error');
         codeInput.focus();
     }
-
-    function preventSpaceInput(event) {
-        if (event.key === ' ') {
-            event.preventDefault();
-        }
-    }
-
-    const inputs = document.querySelectorAll('#NAME, #EMAIL, #CODE');
-    inputs.forEach(input => {
-        input.addEventListener('keypress', preventSpaceInput);
-    });
 
     checkLocalStorage();
 });

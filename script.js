@@ -91,18 +91,13 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-// Add an event listener for the 'pageshow' event
-window.addEventListener('pageshow', function(event) {
-    if (event.persisted) {
-        // Reload the page for all devices
-        window.location.reload();
-    } else {
-        // Call the function to set focus on the input field
-        checkLocalStorage();
-    }
-});
-
-
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        } else {
+            checkLocalStorage();
+        }
+    });
 
     function validateInput(input, fieldName) {
         const trimmedValue = input.value.trim();
@@ -167,26 +162,16 @@ window.addEventListener('pageshow', function(event) {
                 formData.append('CODE', code);
 
                 codeInput.classList.add('success');
-                // Add a transition class to enable CSS transitions
                 codeInput.classList.add('transition');
+                codeInput.placeholder = 'Success, Redirecting you...';
+                codeInput.value = '';
+                document.activeElement.blur();
+                window.location.href = 'https://www.ishortn.ink/' + code;
 
-                // Set placeholder and value after a short delay to allow transition effect
-
-                    codeInput.placeholder = 'Success, Redirecting you...';
-                    codeInput.value = '';
-
-                        
-                        //resetInputFields(); // Resetting all input fields to default placeholders
-                        document.activeElement.blur();
-                        window.location.href = 'https://www.ishortn.ink/' + code;
-
-
-
-                // Submit the form data to Brevo
                 fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
                     method: 'POST',
                     body: formData,
-                    mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
+                    mode: 'no-cors'
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -206,7 +191,6 @@ window.addEventListener('pageshow', function(event) {
             console.error('Error fetching valid codes:', error);
         }
     }
-
 
     function handleInvalidCodeInput() {
         const codeInput = document.getElementById('CODE');

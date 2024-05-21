@@ -50,31 +50,25 @@ document.addEventListener("DOMContentLoaded", function() {
 
     nextNameButton.addEventListener('click', function() {
         const currentInput = formSteps[currentStep].querySelector('input');
-        const fieldName = currentInput.id === 'NAME' ? 'name' : '';
-        if (!validateInput(currentInput, fieldName)) {
+        if (!validateInput(currentInput)) {
             return;
         }
-
         goToNextStep();
     });
 
     nextEmailButton.addEventListener('click', function() {
         const currentInput = formSteps[currentStep].querySelector('input');
-        const fieldName = currentInput.id === 'EMAIL' ? 'email address' : '';
-        if (!validateInput(currentInput, fieldName)) {
+        if (!validateInput(currentInput)) {
             return;
         }
-
         goToNextStep();
     });
 
     nextCodeButton.addEventListener('click', function() {
         const currentInput = formSteps[currentStep].querySelector('input');
-        const fieldName = currentInput.id === 'CODE' ? 'discount code' : '';
-        if (!validateInput(currentInput, fieldName)) {
+        if (!validateInput(currentInput)) {
             return;
         }
-
         validateForm();
     });
 
@@ -91,45 +85,44 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Add an event listener for the 'pageshow' event
-        window.addEventListener('pageshow', function(event) {
+    // Always reload the page on 'pageshow' event if persisted from cache
+    window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
-            // Check if the user is on a mobile device
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-            // Reload the page if it's a mobile device
-            if (isMobile) {
-                window.location.reload();
-            } else {
-                // Call the function to set focus on the input field
-                checkLocalStorage();
-            }
+            window.location.reload();
+        } else {
+            checkLocalStorage();
         }
     });
 
-
-    function validateInput(input, fieldName) {
-        const trimmedValue = input.value.trim();
-        if (!trimmedValue) {
-            input.placeholder = `Please enter your ${fieldName}`;
-            input.classList.add('error');
-            return false;
-        } else if (input.id === 'NAME' && !/^[a-zA-Z]{2,}(?: [a-zA-Z]{2,})?$/.test(trimmedValue)) {
-            input.placeholder = 'Please enter a valid name';
-            input.value = '';
-            input.classList.add('error');
-            input.focus();
-            return false;
-        } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
-            input.placeholder = 'Please enter a valid email address';
-            input.value = '';
-            input.classList.add('error');
-            input.focus();
-            return false;
-        }
-        input.classList.remove('error');
-        return true;
+function validateInput(input) {
+    const trimmedValue = input.value.trim();
+    if (!trimmedValue) {
+        input.placeholder = `Please enter your ${input.id.toLowerCase()}`;
+        input.classList.add('error');
+        return false;
+    } else if (input.id === 'NAME' && !/^[a-zA-Z]{2,}(?: [a-zA-Z]{2,})?$/.test(trimmedValue)) {
+        input.placeholder = 'Please enter a valid name';
+        input.value = '';
+        input.classList.add('error');
+        input.focus();
+        return false;
+    } else if (input.id === 'NAME' && /[;/?]/.test(trimmedValue)) {
+        input.placeholder = 'Invalid characters detected';
+        input.value = '';
+        input.classList.add('error');
+        input.focus();
+        return false;
+    } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
+        input.placeholder = 'Please enter a valid email address';
+        input.value = '';
+        input.classList.add('error');
+        input.focus();
+        return false;
     }
+    input.classList.remove('error');
+    return true;
+}
+
 
     function validateEmail(email) {
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
@@ -174,18 +167,14 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Add a transition class to enable CSS transitions
                 codeInput.classList.add('transition');
 
-                // Set placeholder and value after a short delay to allow transition effect
-                setTimeout(() => {
-                    codeInput.placeholder = 'Success, Redirecting you...';
-                    codeInput.value = '';
+                // Set success message immediately
+                codeInput.placeholder = 'Success, Redirecting you...';
+                codeInput.value = '';
+                document.activeElement.blur(); // Remove focus from the input field
 
-                    // Reset fields just before redirecting
-                    setTimeout(() => {
-                        resetInputFields(); // Resetting all input fields to default placeholders
-                        document.activeElement.blur();
-                        window.location.href = 'https://www.ishortn.ink/' + code;
-                    }, 2000); // Adjust the delay as needed
-                }, 0); // Adjust the delay as needed
+                // Redirect instantly
+                window.location.href = 'https://www.ishortn.ink/' + code;
+
 
                 // Submit the form data to Brevo
                 fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
@@ -211,7 +200,6 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error('Error fetching valid codes:', error);
         }
     }
-
 
     function handleInvalidCodeInput() {
         const codeInput = document.getElementById('CODE');

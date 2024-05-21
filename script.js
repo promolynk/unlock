@@ -91,21 +91,17 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Add an event listener for the 'pageshow' event
-        window.addEventListener('pageshow', function(event) {
-        if (event.persisted) {
-            // Check if the user is on a mobile device
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-            // Reload the page if it's a mobile device
-            if (isMobile) {
-                window.location.reload();
-            } else {
-                // Call the function to set focus on the input field
-                checkLocalStorage();
-            }
-        }
-    });
+// Add an event listener for the 'pageshow' event
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        // Reload the page for all devices
+        window.location.reload();
+    } else {
+        // Call the function to set focus on the input field
+        checkLocalStorage();
+    }
+});
+
 
 
     function validateInput(input, fieldName) {
@@ -179,7 +175,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     codeInput.placeholder = 'Success, Redirecting you...';
                     codeInput.value = '';
 
-                        window.location.reload();
+                        
                         //resetInputFields(); // Resetting all input fields to default placeholders
                         document.activeElement.blur();
                         window.location.href = 'https://www.ishortn.ink/' + code;

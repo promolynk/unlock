@@ -171,6 +171,9 @@ document.addEventListener("DOMContentLoaded", function() {
                     codeInput.placeholder = 'Success, Redirecting you...';
                     codeInput.value = '';
 
+                // Remove focus from the input field
+                    codeInput.blur();
+
                     // Reset fields just before redirecting
                     setTimeout(() => {
                         //resetInputFields(); // Resetting all input fields to default placeholders

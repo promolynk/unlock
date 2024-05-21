@@ -92,6 +92,22 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
 // Add an event listener for the 'pageshow' event
+        window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            // Check if the user is on a mobile device
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+            // Reload the page if it's a mobile device
+            if (isMobile) {
+                window.location.reload();
+            } else {
+                // Call the function to set focus on the input field
+                checkLocalStorage();
+            }
+        }
+    });
+
+// Add an event listener for the 'pageshow' event
 window.addEventListener('pageshow', function(event) {
     if (event.persisted) {
         // Reload the page for all browsers

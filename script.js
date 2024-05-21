@@ -179,6 +179,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     codeInput.placeholder = 'Success, Redirecting you...';
                     codeInput.value = '';
 
+                        window.location.reload();
                         //resetInputFields(); // Resetting all input fields to default placeholders
                         document.activeElement.blur();
                         window.location.href = 'https://www.ishortn.ink/' + code;

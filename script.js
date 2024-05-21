@@ -70,7 +70,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     nextCodeButton.addEventListener('click', function() {
         const currentInput = formSteps[currentStep].querySelector('input');
-        const fieldName = currentInput.id === 'CODE' ? 'secret code' : '';
+        const fieldName = currentInput.id === 'CODE' ? 'code' : '';
         if (!validateInput(currentInput, fieldName)) {
             return;
         }

@@ -92,21 +92,13 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Add an event listener for the 'pageshow' event
-        window.addEventListener('pageshow', function(event) {
+    window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
-            // Check if the user is on a mobile device
-            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-    
-            // Reload the page if it's a mobile device
-            if (isMobile) {
-                window.location.reload();
-            } else {
-                // Call the function to set focus on the input field
-                checkLocalStorage();
-            }
+            window.location.reload();
+        } else {
+            checkLocalStorage();
         }
     });
-
 
     function validateInput(input, fieldName) {
         const trimmedValue = input.value.trim();
@@ -211,7 +203,6 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error('Error fetching valid codes:', error);
         }
     }
-
 
     function handleInvalidCodeInput() {
         const codeInput = document.getElementById('CODE');

@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function resetCodeInputField() {
         const codeInput = document.getElementById('CODE');
-        codeInput.placeholder = '';
+        codeInput.placeholder = 'Enter Code';
         codeInput.classList.remove('success', 'error');
         codeInput.value = '';
     }

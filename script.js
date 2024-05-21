@@ -48,29 +48,30 @@ document.addEventListener("DOMContentLoaded", function() {
         showNextButton();
     }
 
-    nextNameButton.addEventListener('click', function() {
-        const currentInput = formSteps[currentStep].querySelector('input');
-        if (!validateInput(currentInput)) {
-            return;
-        }
-        goToNextStep();
-    });
+nextNameButton.addEventListener('click', function() {
+    const currentInput = formSteps[currentStep].querySelector('input');
+    if (!validateInput(currentInput, 'name')) {
+        return;
+    }
+    goToNextStep();
+});
 
-    nextEmailButton.addEventListener('click', function() {
-        const currentInput = formSteps[currentStep].querySelector('input');
-        if (!validateInput(currentInput)) {
-            return;
-        }
-        goToNextStep();
-    });
+nextEmailButton.addEventListener('click', function() {
+    const currentInput = formSteps[currentStep].querySelector('input');
+    if (!validateInput(currentInput, 'email address')) {
+        return;
+    }
+    goToNextStep();
+});
 
-    nextCodeButton.addEventListener('click', function() {
-        const currentInput = formSteps[currentStep].querySelector('input');
-        if (!validateInput(currentInput)) {
-            return;
-        }
-        validateForm();
-    });
+nextCodeButton.addEventListener('click', function() {
+    const currentInput = formSteps[currentStep].querySelector('input');
+    if (!validateInput(currentInput, 'code')) {
+        return;
+    }
+    validateForm();
+});
+
 
     document.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
@@ -94,38 +95,39 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    function validateInput(input) {
-        const trimmedValue = input.value.trim();
-        if (!trimmedValue) {
-            input.placeholder = 'Please enter your ${fieldName}';
-            input.classList.add('error');
-            return false;
-        } else if (input.id === 'NAME' && !/^[a-zA-Z]{2,}(?: [a-zA-Z]{2,})?$/.test(trimmedValue)) {
-            input.placeholder = 'Please enter a valid name';
-            input.value = '';
-            input.classList.add('error');
-            input.focus();
-            return false;
-        } else if (input.id === 'NAME' && /[;/?]/.test(trimmedValue)) {
-            input.placeholder = 'Invalid characters detected';
-            input.value = '';
-            input.classList.add('error');
-            input.focus();
-            return false;
-        } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
-            input.placeholder = 'Please enter a valid email address';
-            input.value = '';
-            input.classList.add('error');
-            input.focus();
-            return false;
-        } else if (trimmedValue === null ) {
-            input.placeholder = 'Please enter a value';
-            input.classList.add('error');
-            return false;
-        }
-        input.classList.remove('error');
-        return true;
+function validateInput(input, fieldName) {
+    const trimmedValue = input.value.trim();
+    if (!trimmedValue) {
+        input.placeholder = `Please enter your ${fieldName}`;
+        input.classList.add('error');
+        return false;
+    } else if (input.id === 'NAME' && !/^[a-zA-Z]{2,}(?: [a-zA-Z]{2,})?$/.test(trimmedValue)) {
+        input.placeholder = 'Please enter a valid name';
+        input.value = '';
+        input.classList.add('error');
+        input.focus();
+        return false;
+    } else if (input.id === 'NAME' && /[;/?]/.test(trimmedValue)) {
+        input.placeholder = 'Invalid characters detected';
+        input.value = '';
+        input.classList.add('error');
+        input.focus();
+        return false;
+    } else if (input.id === 'EMAIL' && !validateEmail(trimmedValue)) {
+        input.placeholder = 'Please enter a valid email address';
+        input.value = '';
+        input.classList.add('error');
+        input.focus();
+        return false;
+    } else {
+        // Reset placeholder if validation passes
+        input.placeholder = '';
     }
+    input.classList.remove('error');
+    return true;
+}
+
+
 
     function validateEmail(email) {
         const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;

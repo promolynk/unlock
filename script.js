@@ -144,7 +144,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function resetCodeInputField() {
         const codeInput = document.getElementById('CODE');
-        codeInput.placeholder = 'Enter Code';
+        codeInput.placeholder = '';
         codeInput.classList.remove('success', 'error');
         codeInput.value = '';
     }
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     // Reset fields just before redirecting
                     setTimeout(() => {
-                        // resetInputFields(); // Resetting all input fields to default placeholders
+                        resetInputFields(); // Resetting all input fields to default placeholders
                         document.activeElement.blur();
                         window.location.href = 'https://www.ishortn.ink/' + code;
                     }, 2000); // Adjust the delay as needed

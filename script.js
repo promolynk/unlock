@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 // Set placeholder and value after a short delay to allow transition effect
                 setTimeout(() => {
-                    codeInput.placeholder = 'Success, redirecting you...';
+                    codeInput.placeholder = 'Success, Redirecting you...';
                     codeInput.value = '';
 
                     // Reset fields just before redirecting

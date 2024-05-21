@@ -48,9 +48,14 @@ document.addEventListener("DOMContentLoaded", function() {
         showNextButton();
     }
 
+    function capitalizeFirstLetter(string) {
+        return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
+    }
+
     nextNameButton.addEventListener('click', function() {
         const currentInput = formSteps[currentStep].querySelector('input');
         const fieldName = currentInput.id === 'NAME' ? 'name' : '';
+        currentInput.value = capitalizeFirstLetter(currentInput.value);
         if (!validateInput(currentInput, fieldName)) {
             return;
         }
@@ -89,6 +94,26 @@ document.addEventListener("DOMContentLoaded", function() {
                 nextCodeButton.click();
             }
         }
+    });
+
+    // Prevent space bar in input fields
+    document.querySelectorAll('input').forEach(input => {
+        input.addEventListener('keypress', function(event) {
+            if (event.key === ' ') {
+                event.preventDefault();
+                input.classList.add('error');
+                input.placeholder = 'Spaces are not allowed';
+            } else {
+                input.classList.remove('error');
+                if (input.id === 'NAME') {
+                    input.placeholder = 'Your Name';
+                } else if (input.id === 'EMAIL') {
+                    input.placeholder = 'Your Email Address';
+                } else if (input.id === 'CODE') {
+                    input.placeholder = 'Enter Code';
+                }
+            }
+        });
     });
 
     // Add an event listener for the 'pageshow' event
@@ -142,70 +167,69 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     async function validateForm() {
-    const name = document.getElementById('NAME').value.trim();
-    const email = document.getElementById('EMAIL').value.trim();
-    const codeInput = document.getElementById('CODE');
-    const code = codeInput.value.trim();
+        const name = document.getElementById('NAME').value.trim();
+        const email = document.getElementById('EMAIL').value.trim();
+        const codeInput = document.getElementById('CODE');
+        const code = codeInput.value.trim();
 
-    if (!validateEmail(email)) {
-        return;
-    }
-
-    try {
-        const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
-        const data = await response.text();
-        const validCodes = data.split('\n');
-
-        if (validCodes.includes(code)) {
-            const formData = new FormData();
-            formData.append('NAME', name);
-            formData.append('EMAIL', email);
-            formData.append('CODE', code);
-
-            codeInput.classList.add('success');
-            // Add a transition class to enable CSS transitions
-            codeInput.classList.add('transition');
-
-            // Set placeholder and value after a short delay to allow transition effect
-            setTimeout(() => {
-                codeInput.placeholder = 'Success, Redirecting you...';
-                codeInput.value = '';
-
-                // Remove focus from the input field
-                codeInput.blur();
-
-                // Reset fields just before redirecting
-                setTimeout(() => {
-                    document.activeElement.blur();
-                    window.location.href = 'https://www.ishortn.ink/' + code;
-                }, 1000); // Adjust the delay as needed
-            }, 0); // Adjust the delay as needed
-
-            // Submit the form data to Brevo
-            fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
-                method: 'POST',
-                body: formData,
-                mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
-            })
-            .then(response => {
-                if (!response.ok) {
-                    console.error('Error:', response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-            });
-
-            const userData = { name, email };
-            localStorage.setItem('userData', JSON.stringify(userData));
-        } else {
-            handleInvalidCodeInput();
+        if (!validateEmail(email)) {
+            return;
         }
-    } catch (error) {
-        console.error('Error fetching valid codes:', error);
-    }
-}
 
+        try {
+            const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
+            const data = await response.text();
+            const validCodes = data.split('\n');
+
+            if (validCodes.includes(code)) {
+                const formData = new FormData();
+                formData.append('NAME', name);
+                formData.append('EMAIL', email);
+                formData.append('CODE', code);
+
+                codeInput.classList.add('success');
+                // Add a transition class to enable CSS transitions
+                codeInput.classList.add('transition');
+
+                // Set placeholder and value after a short delay to allow transition effect
+                setTimeout(() => {
+                    codeInput.placeholder = 'Success, Redirecting you...';
+                    codeInput.value = '';
+
+                    // Remove focus from the input field
+                    codeInput.blur();
+
+                    // Reset fields just before redirecting
+                    setTimeout(() => {
+                        document.activeElement.blur();
+                        window.location.href = 'https://www.ishortn.ink/' + code;
+                    }, 1000); // Adjust the delay as needed
+                }, 0); // Adjust the delay as needed
+
+                // Submit the form data to Brevo
+                fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
+                    method: 'POST',
+                    body: formData,
+                    mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Error:', response.statusText);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+                const userData = { name, email };
+                localStorage.setItem('userData', JSON.stringify(userData));
+            } else {
+                handleInvalidCodeInput();
+            }
+        } catch (error) {
+            console.error('Error fetching valid codes:', error);
+        }
+    }
 
     function handleInvalidCodeInput() {
         const codeInput = document.getElementById('CODE');

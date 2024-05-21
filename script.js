@@ -176,7 +176,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 // Set placeholder and value after a short delay to allow transition effect
                 setTimeout(() => {
-                    codeInput.placeholder = 'Discount unlocked!';
+                    codeInput.placeholder = 'Your discount has been unlocked!';
                     codeInput.value = '';
 
                     // Reset fields just before redirecting

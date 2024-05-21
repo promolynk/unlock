@@ -171,10 +171,13 @@ document.addEventListener("DOMContentLoaded", function() {
                     codeInput.placeholder = 'Success, Redirecting you...';
                     codeInput.value = '';
 
-                // Remove focus from the input field
-                    codeInput.blur();
-                    document.activeElement.blur();
-                    window.location.href = 'https://www.ishortn.ink/' + code;
+                    // Reset fields just before redirecting
+                    setTimeout(() => {
+                        //resetInputFields(); // Resetting all input fields to default placeholders
+                        document.activeElement.blur();
+                        window.location.href = 'https://www.ishortn.ink/' + code;
+                    }, 0); // Adjust the delay as needed
+                }, 0); // Adjust the delay as needed
 
 
                 // Submit the form data to Brevo

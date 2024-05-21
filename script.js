@@ -127,21 +127,13 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 
     // Add an event listener for the 'pageshow' event
-window.addEventListener('pageshow', function(event) {
-    if (event.persisted) {
-        // Page is being loaded from the cache (back or forward button)
-        window.location.reload();
-    } else {
-        // Page is being loaded for the first time or via normal navigation
-        checkLocalStorage();
-
-        // Set focus on the appropriate input field
-        const currentInput = formSteps[currentStep].querySelector('input');
-        if (currentInput) {
-            currentInput.focus();
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            window.location.reload();
+        } else {
+            checkLocalStorage();
         }
-    }
-});
+    });
 
     function validateInput(input, fieldName) {
         const trimmedValue = input.value.trim();

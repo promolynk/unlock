@@ -81,6 +81,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.addEventListener('keypress', function(event) {
         if (event.key === 'Enter') {
             event.preventDefault();
+            resetInputFields(); // Resetting all input fields to default placeholders
             if (currentStep === 0) {
                 nextNameButton.click();
             } else if (currentStep === 1) {
@@ -181,7 +182,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
                     // Reset fields just before redirecting
                     setTimeout(() => {
-                        // resetInputFields(); // Resetting all input fields to default placeholders
                         document.activeElement.blur();
                         window.location.href = 'https://www.ishortn.ink/' + code;
                     }, 0); // Adjust the delay as needed

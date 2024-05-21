@@ -91,13 +91,22 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    window.addEventListener('pageshow', function(event) {
+    // Add an event listener for the 'pageshow' event
+        window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
-            window.location.reload();
-        } else {
-            checkLocalStorage();
+            // Check if the user is on a mobile device
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    
+            // Reload the page if it's a mobile device
+            if (isMobile) {
+                window.location.reload();
+            } else {
+                // Call the function to set focus on the input field
+                checkLocalStorage();
+            }
         }
     });
+
 
     function validateInput(input, fieldName) {
         const trimmedValue = input.value.trim();
@@ -127,6 +136,19 @@ document.addEventListener("DOMContentLoaded", function() {
         return emailPattern.test(email);
     }
 
+    function resetInputFields() {
+        document.getElementById('NAME').placeholder = 'Your Name';
+        document.getElementById('EMAIL').placeholder = 'Your Email Address';
+        resetCodeInputField();
+    }
+
+    function resetCodeInputField() {
+        const codeInput = document.getElementById('CODE');
+        codeInput.placeholder = 'Enter Code';
+        codeInput.classList.remove('success', 'error');
+        codeInput.value = '';
+    }
+
     async function validateForm() {
         const name = document.getElementById('NAME').value.trim();
         const email = document.getElementById('EMAIL').value.trim();
@@ -149,15 +171,27 @@ document.addEventListener("DOMContentLoaded", function() {
                 formData.append('CODE', code);
 
                 codeInput.classList.add('success');
+                // Add a transition class to enable CSS transitions
                 codeInput.classList.add('transition');
-                codeInput.placeholder = 'Success, Redirecting you...';
-                codeInput.value = '';
-                document.activeElement.blur(); // Remove focus from the input field
 
+                // Set placeholder and value after a short delay to allow transition effect
+                setTimeout(() => {
+                    codeInput.placeholder = 'Success, Redirecting you...';
+                    codeInput.value = '';
+
+                    // Reset fields just before redirecting
+                    setTimeout(() => {
+                        resetInputFields(); // Resetting all input fields to default placeholders
+                        document.activeElement.blur();
+                        window.location.href = 'https://www.ishortn.ink/' + code;
+                    }, 2000); // Adjust the delay as needed
+                }, 0); // Adjust the delay as needed
+
+                // Submit the form data to Brevo
                 fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
                     method: 'POST',
                     body: formData,
-                    mode: 'no-cors'
+                    mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -170,8 +204,6 @@ document.addEventListener("DOMContentLoaded", function() {
 
                 const userData = { name, email };
                 localStorage.setItem('userData', JSON.stringify(userData));
-
-                window.location.href = 'https://www.ishortn.ink/' + code;
             } else {
                 handleInvalidCodeInput();
             }
@@ -179,6 +211,7 @@ document.addEventListener("DOMContentLoaded", function() {
             console.error('Error fetching valid codes:', error);
         }
     }
+
 
     function handleInvalidCodeInput() {
         const codeInput = document.getElementById('CODE');

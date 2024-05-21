@@ -114,6 +114,16 @@ document.addEventListener("DOMContentLoaded", function() {
                 }
             }
         });
+
+        input.addEventListener('input', function(event) {
+            if (input.value.includes(' ')) {
+                input.classList.add('error');
+                input.placeholder = 'Spaces are not allowed';
+                input.value = input.value.replace(/\s+/g, '');
+            } else {
+                input.classList.remove('error');
+            }
+        });
     });
 
     // Add an event listener for the 'pageshow' event
@@ -127,7 +137,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     function validateInput(input, fieldName) {
         const trimmedValue = input.value.trim();
-        if (!trimmedValue) {
+        if (!trimmedValue || trimmedValue.includes(' ')) {
             input.placeholder = `Please enter your ${fieldName}`;
             input.classList.add('error');
             return false;

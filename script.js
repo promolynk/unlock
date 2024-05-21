@@ -101,8 +101,8 @@ document.addEventListener("DOMContentLoaded", function() {
         input.addEventListener('keypress', function(event) {
             if (event.key === ' ') {
                 event.preventDefault();
-                input.classList.add('error');
-                input.placeholder = 'Spaces are not allowed';
+                // input.classList.add('error');
+                // input.placeholder = 'Spaces are not allowed';
             } else {
                 input.classList.remove('error');
                 if (input.id === 'NAME') {
@@ -117,11 +117,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         input.addEventListener('input', function(event) {
             if (input.value.includes(' ')) {
-                input.classList.add('error');
-                input.placeholder = 'Spaces are not allowed';
+                // input.classList.add('error');
+                // input.placeholder = 'Spaces are not allowed';
                 input.value = input.value.replace(/\s+/g, '');
-            } else {
-                input.classList.remove('error');
             }
         });
     });

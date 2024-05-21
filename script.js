@@ -178,7 +178,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 setTimeout(() => {
                     document.activeElement.blur();
                     window.location.href = 'https://www.ishortn.ink/' + code;
-                }, 500); // Adjust the delay as needed
+                }, 2000); // Adjust the delay as needed
             }, 0); // Adjust the delay as needed
 
             // Submit the form data to Brevo

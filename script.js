@@ -29,10 +29,13 @@ document.addEventListener("DOMContentLoaded", function() {
 
         showNextButton();
 
-        const currentInput = formSteps[currentStep].querySelector('input');
-        if (currentInput) {
-            currentInput.focus();
-        }
+        // Delay setting the focus to ensure the page has fully loaded
+        setTimeout(() => {
+            const currentInput = formSteps[currentStep].querySelector('input');
+            if (currentInput) {
+                currentInput.focus();
+            }
+        }, 300); // Adjust the delay as needed
     }
 
     function goToNextStep() {
@@ -101,8 +104,8 @@ document.addEventListener("DOMContentLoaded", function() {
         input.addEventListener('keypress', function(event) {
             if (event.key === ' ') {
                 event.preventDefault();
-                // input.classList.add('error');
-                // input.placeholder = 'Spaces are not allowed';
+                input.classList.add('error');
+                input.placeholder = 'Spaces are not allowed';
             } else {
                 input.classList.remove('error');
                 if (input.id === 'NAME') {
@@ -117,8 +120,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         input.addEventListener('input', function(event) {
             if (input.value.includes(' ')) {
-                // input.classList.add('error');
-                // input.placeholder = 'Spaces are not allowed';
+                input.classList.add('error');
+                input.placeholder = 'Spaces are not allowed';
                 input.value = input.value.replace(/\s+/g, '');
             } else {
                 input.classList.remove('error');
@@ -204,7 +207,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 // Set placeholder and value after a short delay to allow transition effect
                 setTimeout(() => {
                     codeInput.placeholder = 'Success, Redirecting you...';
-                    codeInput.value = '';
+                codeInput.value = '';
 
                     // Remove focus from the input field
                     codeInput.blur();

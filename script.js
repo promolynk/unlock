@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-// Add an event listener for the 'pageshow' event
+    // Add an event listener for the 'pageshow' event
         window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
             // Check if the user is on a mobile device
@@ -106,18 +106,6 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         }
     });
-
-// Add an event listener for the 'pageshow' event
-window.addEventListener('pageshow', function(event) {
-    if (event.persisted) {
-        // Reload the page for all browsers
-        window.location.reload();
-    } else {
-        // Call the function to set focus on the input field
-        checkLocalStorage();
-    }
-});
-
 
 
     function validateInput(input, fieldName) {
@@ -193,10 +181,10 @@ window.addEventListener('pageshow', function(event) {
 
                     // Reset fields just before redirecting
                     setTimeout(() => {
-                        // resetInputFields(); // Resetting all input fields to default placeholders
+                        resetInputFields(); // Resetting all input fields to default placeholders
                         document.activeElement.blur();
                         window.location.href = 'https://www.ishortn.ink/' + code;
-                    }, 0); // Adjust the delay as needed
+                    }, 2000); // Adjust the delay as needed
                 }, 0); // Adjust the delay as needed
 
                 // Submit the form data to Brevo

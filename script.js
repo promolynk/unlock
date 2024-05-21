@@ -91,14 +91,22 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 
-    // Add an event listener for the 'pageshow' event
     window.addEventListener('pageshow', function(event) {
         if (event.persisted) {
-            window.location.reload();
-        } else {
-            checkLocalStorage();
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            if (isMobile) {
+                window.location.reload();
+            } else {
+                checkLocalStorage();
+            }
         }
     });
+
+    function capitalizeWords(name) {
+        return name.replace(/\b\w/g, function(char) {
+            return char.toUpperCase();
+        });
+    }
 
     function validateInput(input, fieldName) {
         const trimmedValue = input.value.trim();
@@ -141,19 +149,21 @@ document.addEventListener("DOMContentLoaded", function() {
         codeInput.value = '';
     }
 
-    function capitalizeName(name) {
-        return name.replace(/\b\w/g, char => char.toUpperCase());
-    }
-
     async function validateForm() {
-        const name = capitalizeName(document.getElementById('NAME').value.trim());
-        const email = document.getElementById('EMAIL').value.trim();
+        const nameInput = document.getElementById('NAME');
+        const emailInput = document.getElementById('EMAIL');
         const codeInput = document.getElementById('CODE');
-        const code = codeInput.value.trim();
+
+        let name = nameInput.value.trim();
+        let email = emailInput.value.trim();
+        let code = codeInput.value.trim();
 
         if (!validateEmail(email)) {
             return;
         }
+
+        name = capitalizeWords(name);
+        nameInput.value = name;
 
         try {
             const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
@@ -167,29 +177,22 @@ document.addEventListener("DOMContentLoaded", function() {
                 formData.append('CODE', code);
 
                 codeInput.classList.add('success');
-                // Add a transition class to enable CSS transitions
                 codeInput.classList.add('transition');
 
-                // Set placeholder and value after a short delay to allow transition effect
                 setTimeout(() => {
                     codeInput.placeholder = 'Success, Redirecting you...';
                     codeInput.value = '';
 
-                    // Remove focus from the input field
-                    codeInput.blur();
-
-                    // Reset fields just before redirecting
                     setTimeout(() => {
                         document.activeElement.blur();
                         window.location.href = 'https://www.ishortn.ink/' + code;
-                    }, 1000); // Adjust the delay as needed
-                }, 0); // Adjust the delay as needed
+                    }, 1000);
+                }, 0);
 
-                // Submit the form data to Brevo
                 fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
                     method: 'POST',
                     body: formData,
-                    mode: 'no-cors' // Set mode to 'no-cors' to disable CORS
+                    mode: 'no-cors'
                 })
                 .then(response => {
                     if (!response.ok) {
@@ -217,6 +220,17 @@ document.addEventListener("DOMContentLoaded", function() {
         codeInput.classList.add('error');
         codeInput.focus();
     }
+
+    function preventSpaceInput(event) {
+        if (event.key === ' ') {
+            event.preventDefault();
+        }
+    }
+
+    const inputs = document.querySelectorAll('#NAME, #EMAIL, #CODE');
+    inputs.forEach(input => {
+        input.addEventListener('keypress', preventSpaceInput);
+    });
 
     checkLocalStorage();
 });

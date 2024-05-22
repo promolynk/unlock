@@ -31,7 +31,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const currentInput = formSteps[currentStep].querySelector('input');
         if (currentInput) {
-            currentInput.focus();
+            // initial focus
+            // currentInput.focus();
         }
     }
 

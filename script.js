@@ -31,8 +31,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         const currentInput = formSteps[currentStep].querySelector('input');
         if (currentInput) {
-            // initial focus
-            // currentInput.focus();
+            //currentInput.focus();
         }
     }
 
@@ -58,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const fieldName = currentInput.id === 'NAME' ? 'name' : '';
         currentInput.value = capitalizeFirstLetter(currentInput.value);
         if (!validateInput(currentInput, fieldName)) {
+            currentInput.focus();
             return;
         }
 
@@ -68,6 +68,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const currentInput = formSteps[currentStep].querySelector('input');
         const fieldName = currentInput.id === 'EMAIL' ? 'email address' : '';
         if (!validateInput(currentInput, fieldName)) {
+            currentInput.focus();
             return;
         }
 
@@ -77,7 +78,9 @@ document.addEventListener("DOMContentLoaded", function() {
     nextCodeButton.addEventListener('click', function() {
         const currentInput = formSteps[currentStep].querySelector('input');
         const fieldName = currentInput.id === 'CODE' ? 'discount code' : '';
+
         if (!validateInput(currentInput, fieldName)) {
+            currentInput.focus();
             return;
         }
 
@@ -175,47 +178,49 @@ document.addEventListener("DOMContentLoaded", function() {
         codeInput.value = '';
     }
 
-    async function validateForm() {
-        const name = document.getElementById('NAME').value.trim();
-        const email = document.getElementById('EMAIL').value.trim();
+    function handleInvalidCodeInput() {
         const codeInput = document.getElementById('CODE');
-        const code = codeInput.value.trim();
+        codeInput.placeholder = 'Invalid code, Please try again';
+        codeInput.value = '';
+        codeInput.classList.add('error');
+        codeInput.focus();
+    }
 
-        if (!validateEmail(email)) {
-            return;
-        }
+async function validateForm() {
+    const name = document.getElementById('NAME').value.trim();
+    const email = document.getElementById('EMAIL').value.trim();
+    const codeInput = document.getElementById('CODE');
+    const code = codeInput.value.trim();
+    codeInput.focus();
 
-        try {
-            const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
-            const data = await response.text();
-            const validCodes = data.split('\n');
+    if (!validateEmail(email)) {
+        return;
+    }
 
-            if (validCodes.includes(code)) {
-                const formData = new FormData();
-                formData.append('NAME', name);
-                formData.append('EMAIL', email);
-                formData.append('CODE', code);
+    try {
+        const response = await fetch('https://gist.githubusercontent.com/pixelpyro/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
+        const data = await response.text();
+        const validCodes = data.split('\n');
 
-                codeInput.classList.add('success');
-                // Add a transition class to enable CSS transitions
-                codeInput.classList.add('transition');
+        if (validCodes.includes(code)) {
+            const formData = new FormData();
+            formData.append('NAME', name);
+            formData.append('EMAIL', email);
+            formData.append('CODE', code);
 
-                // Set placeholder and value after a short delay to allow transition effect
-                setTimeout(() => {
-                    codeInput.placeholder = 'Success, Redirecting you...';
-                    codeInput.value = '';
+            codeInput.classList.add('success');
+            // Add a transition class to enable CSS transitions
+            codeInput.classList.add('transition');
 
-                    // Remove focus from the input field
-                    codeInput.blur();
+            // Set placeholder and value after a short delay to allow transition effect
+            setTimeout(() => {
+                codeInput.placeholder = 'Success, Redirecting you...';
+                codeInput.value = '';
 
-                    // Reset fields just before redirecting
-                    setTimeout(() => {
-                        document.activeElement.blur();
-                        window.location.href = 'https://www.ishortn.ink/' + code;
-                    }, 1000); // Adjust the delay as needed
-                }, 0); // Adjust the delay as needed
+                // Remove focus from the input field
+                codeInput.blur();
 
-                // Submit the form data to Brevo
+                // Submit the form data using fetch
                 fetch('https://fc17af9f.sibforms.com/serve/MUIFAJrCl1rqwbvqTuDl1_SHLR6vl0oCI77i0ACJidsDAtxiA7LX6zTxucsOjHtc0RbeeeQilSqKzgPCMkJrcrPuuQTG_CsTUQsqZfH1t4n37YXEfTkO4Qin2o-Yb5RkDMJ0ZchoztnZqajCFloSyfDZ-E0TnNnznjp1aHd0V8bwEANogygfddtJFECq_NmxwSl9uMCLdAE4iJ7U', {
                     method: 'POST',
                     body: formData,
@@ -230,23 +235,22 @@ document.addEventListener("DOMContentLoaded", function() {
                     console.error('Error:', error);
                 });
 
-                const userData = { name, email };
-                localStorage.setItem('userData', JSON.stringify(userData));
-            } else {
-                handleInvalidCodeInput();
-            }
-        } catch (error) {
-            console.error('Error fetching valid codes:', error);
-        }
-    }
+                // Redirect after a short delay
+                setTimeout(() => {
+                    window.location.href = 'https://www.ishortn.ink/' + code;
+                }, 1000); // Adjust the delay as needed
+            }, 0); // Adjust the delay as needed
 
-    function handleInvalidCodeInput() {
-        const codeInput = document.getElementById('CODE');
-        codeInput.placeholder = 'Invalid code, Please try again';
-        codeInput.value = '';
-        codeInput.classList.add('error');
-        codeInput.focus();
+            const userData = { name, email };
+            localStorage.setItem('userData', JSON.stringify(userData));
+        } else {
+            handleInvalidCodeInput();
+        }
+    } catch (error) {
+        console.error('Error fetching valid codes:', error);
     }
+}
+
 
     checkLocalStorage();
 });

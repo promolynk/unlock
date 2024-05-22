@@ -140,7 +140,11 @@ document.addEventListener("DOMContentLoaded", function() {
     function validateInput(input, fieldName) {
         const trimmedValue = input.value.trim();
         if (!trimmedValue || trimmedValue.includes(' ')) {
-            input.placeholder = `Please enter your ${fieldName}`;
+            if (input.id === 'CODE') {
+                input.placeholder = 'Please enter a valid code';
+            } else {
+                input.placeholder = `Please enter your ${fieldName}`;
+            }
             input.classList.add('error');
             return false;
         } else if (input.id === 'NAME' && !/^[a-zA-Z]{2,}(?: [a-zA-Z]{2,})?$/.test(trimmedValue)) {

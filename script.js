@@ -29,10 +29,12 @@ document.addEventListener("DOMContentLoaded", function() {
 
         showNextButton();
 
-        const currentInput = formSteps[currentStep].querySelector('input');
-        if (currentInput) {
-            currentInput.focus();
-        }
+        setTimeout(() => {
+            const currentInput = formSteps[currentStep].querySelector('input');
+            if (currentInput) {
+                currentInput.focus();
+            }
+        }, 100); // Delay focus for 100 milliseconds
     }
 
     function goToNextStep() {

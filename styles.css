@@ -20,7 +20,7 @@ body {
     border-radius: 10px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Deeper shadow */
     max-width: 400px;
-    margin: 20vh auto auto;
+    margin: 15vh auto auto;
 }
 
 .sib-form-container {

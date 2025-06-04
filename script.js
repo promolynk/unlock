@@ -202,7 +202,7 @@ async function validateForm() {
     }
 
     try {
-        const response = await fetch('https://gist.githubusercontent.com/promolynk/ba96e47bfa2f3dd0bdc22969f72bea87/raw/');
+        const response = await fetch('https://gist.githubusercontent.com/promolynk/ba96e47bfa2f3dd0bdc22969f72bea87/raw/ac82632936a11a15c28eebf78da6552b01686b42/promo-codes');
         const data = await response.text();
         const validCodes = data.split('\n');
 
